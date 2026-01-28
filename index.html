@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HPC Quick Start Guide - IISER Mohali</title>
@@ -10,6 +12,33 @@
             padding: 0;
             box-sizing: border-box;
         }
+.github-link {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 1rem;
+}
+
+.github-link a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,0,0,0.2);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.github-link a:hover {
+    background: rgba(0,0,0,0.4);
+    transform: translateY(-2px);
+}
+
+.github-link i {
+    font-size: 1.3rem;
+}
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -363,9 +392,16 @@
 </head>
 <body>
     <header>
-        <h1>🖥️ HPC Quick Start Guide</h1>
-        <p>IISER Mohali High Performance Computing Cluster</p>
-    </header>
+    <div class="github-link">
+        <a href="https://github.com/sidhu2690" target="_blank">
+            <i class="fab fa-github"></i>
+            sidhu2690
+        </a>
+    </div>
+
+    <h1>🖥️ HPC Quick Start Guide</h1>
+    <p>IISER Mohali High Performance Computing Cluster</p>
+</header>
     
     <nav>
         <ul>
@@ -453,23 +489,23 @@
             <div class="diagram">
                 <pre style="background: transparent; color: #333; text-align: left; display: inline-block;">
 ┌─────────────────────────────────────────────────────────────────┐
-│                         HPC CLUSTER                             │
+│                         HPC CLUSTER                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
+│                                                                  │
 │   ┌──────────┐    ┌──────────┐         ┌──────────┐             │
 │   │  Login   │    │  Login   │         │  Master  │             │
 │   │  Node 1  │    │  Node 2  │         │  Nodes   │             │
 │   └────┬─────┘    └────┬─────┘         └────┬─────┘             │
-│        │               │                    │                   │
-│        └───────────────┴────────────────────┘                   │
-│                        │                                        │
-│            ┌───────────┴───────────┐                            │
-│            │    High-Speed Network │                            │
-│            └───────────┬───────────┘                            │
-│                        │                                        │
+│        │               │                    │                    │
+│        └───────────────┴────────────────────┘                    │
+│                        │                                         │
+│            ┌───────────┴───────────┐                             │
+│            │    High-Speed Network │                             │
+│            └───────────┬───────────┘                             │
+│                        │                                         │
 │   ┌────────────────────┼────────────────────┐                   │
-│   │                    │                    │                   │
-│   ▼                    ▼                    ▼                   │
+│   │                    │                    │                    │
+│   ▼                    ▼                    ▼                    │
 │ ┌──────────┐      ┌──────────┐        ┌──────────┐              │
 │ │ Compute  │      │ Compute  │  ...   │ Compute  │              │
 │ │ Node     │      │ Node     │        │ Node     │              │
@@ -477,7 +513,7 @@
 │ │          │      │          │        │          │              │
 │ │ 52 cores │      │ 52 cores │        │ 52 cores │              │
 │ └──────────┘      └──────────┘        └──────────┘              │
-│                                                                 │
+│                                                                  │
 └─────────────────────────────────────────────────────────────────┘
                 </pre>
             </div>
@@ -1208,10 +1244,7 @@ source ~/.bashrc
 checkfree long
 checkfree short
 checkfree default
-checkfree infinity
-checkfree gpushort
-checkfree gpulong
-            </code></pre>
+checkfree infinity</code></pre>
             
             <div class="danger-box">
                 <h3><span class="skull">🚨</span> Important: After Checking Free Cores</h3>
