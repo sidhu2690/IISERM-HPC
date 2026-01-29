@@ -1534,8 +1534,15 @@ python analysis.py
 
 echo "Job finished at: $(date)"</code></pre>
             
-            <h3>Example 2: Multi-threaded Job (OpenMP)</h3>
-            <pre><code><span class="comment">#!/bin/bash</span>
+   <h3>Example 2: Multi-threaded Job (OpenMP)</h3>
+
+<p style="color:#c0392b; font-weight:bold; margin-bottom:10px;">
+⚠ IMPORTANT: Requesting multiple cores and setting OMP_NUM_THREADS alone DOES NOT make your program parallel.
+Your program MUST be explicitly written using OpenMP directives (e.g., #pragma omp parallel, #pragma omp parallel for).
+Otherwise, it will still run on a single core and NOT use other nodes or cores.
+</p>
+
+<pre><code><span class="comment">#!/bin/bash</span>
 <span class="pbs-directive">#PBS -N openmp_sim</span>
 <span class="pbs-directive">#PBS -l nodes=1:ppn=16</span>          <span class="comment"># 16 cores on 1 node</span>
 <span class="pbs-directive">#PBS -l walltime=48:00:00</span>
@@ -1549,8 +1556,12 @@ cd <span class="variable">$PBS_O_WORKDIR</span>
 export OMP_NUM_THREADS=16
 
 echo "Using $OMP_NUM_THREADS threads"
+
+<span class="comment"># The program must be compiled with OpenMP support (e.g., gcc -fopenmp)</span>
+<span class="comment"># and contain OpenMP parallel regions inside the code.</span>
+
 ./my_openmp_program</code></pre>
-            
+
             <h3>Example 3: MPI Job (Multiple Nodes)</h3>
             <pre><code><span class="comment">#!/bin/bash</span>
 <span class="pbs-directive">#PBS -N mpi_simulation</span>
