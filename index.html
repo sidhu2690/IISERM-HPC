@@ -1,76 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HPC Quick Start Guide - IISER Mohali</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-.github-link {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    font-size: 1rem;
-}
-
-.github-link a {
-    color: white;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(0,0,0,0.2);
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    transition: background 0.3s, transform 0.2s;
-}
-
-.github-link a:hover {
-    background: rgba(0,0,0,0.4);
-    transform: translateY(-2px);
-}
-
-.github-link i {
-    font-size: 1.3rem;
-}
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.7;
+            line-height: 1.6;
             color: #333;
-            background-color: #f8f9fa;
+            background-color: #f5f5f5;
         }
         
         header {
             background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
             color: white;
-            padding: 2rem 0;
+            padding: 1.5rem 1rem;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
         }
         
         header h1 {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             margin-bottom: 0.5rem;
         }
         
         header p {
             opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .github-link {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .github-link a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(0,0,0,0.2);
+            padding: 0.4rem 0.7rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .github-link a:hover {
+            background: rgba(0,0,0,0.4);
+        }
+
+        .github-link i {
             font-size: 1.1rem;
+        }
+        
+        /* Mobile Navigation Toggle */
+        .nav-toggle {
+            display: none;
+            background: #2d3748;
+            color: white;
+            border: none;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-toggle i {
+            margin-right: 0.5rem;
         }
         
         nav {
             background: #2d3748;
-            padding: 1rem;
+            padding: 0.5rem;
             position: sticky;
             top: 0;
             z-index: 100;
+            max-height: 70vh;
+            overflow-y: auto;
         }
         
         nav ul {
@@ -78,7 +100,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -86,10 +108,11 @@
         nav a {
             color: #e2e8f0;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.8rem;
             border-radius: 4px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: background 0.3s;
+            display: block;
         }
         
         nav a:hover {
@@ -99,35 +122,35 @@
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
         }
         
         section {
             background: white;
-            margin-bottom: 2rem;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
         
         h2 {
             color: #1a365d;
             border-bottom: 3px solid #3182ce;
             padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-            font-size: 1.6rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.5rem;
         }
         
         h3 {
             color: #2c5282;
-            margin: 1.5rem 0 1rem 0;
-            font-size: 1.2rem;
+            margin: 1.3rem 0 0.8rem 0;
+            font-size: 1.15rem;
         }
         
         h4 {
             color: #4a5568;
             margin: 1rem 0 0.5rem 0;
-            font-size: 1.05rem;
+            font-size: 1rem;
         }
         
         p {
@@ -137,21 +160,21 @@
         pre {
             background: #1a202c;
             color: #e2e8f0;
-            padding: 1.2rem;
-            border-radius: 6px;
+            padding: 1rem;
+            border-radius: 5px;
             overflow-x: auto;
             margin: 1rem 0;
             font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.5;
         }
         
         code {
             background: #edf2f7;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
             font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #c53030;
         }
         
@@ -164,23 +187,23 @@
         .danger-box {
             background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
             border: 3px solid #c53030;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border-radius: 6px;
             color: #742a2a;
-            box-shadow: 0 4px 6px rgba(197, 48, 48, 0.3);
+            box-shadow: 0 3px 5px rgba(197, 48, 48, 0.2);
         }
         
         .danger-box h3 {
             color: #742a2a;
             margin-top: 0;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         
         .danger-box ul {
-            margin-left: 1.5rem;
+            margin-left: 1.3rem;
             margin-top: 0.5rem;
         }
         
@@ -191,31 +214,28 @@
         .warning-box {
             background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
             border-left: 5px solid #d97706;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border-radius: 0 6px 6px 0;
             color: #92400e;
         }
         
         .warning-box h3 {
             color: #92400e;
             margin-top: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         
         .warning-box ul {
-            margin-left: 1.5rem;
+            margin-left: 1.3rem;
             margin-top: 0.5rem;
         }
         
         .info-box {
             background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
             border-left: 5px solid #2b6cb0;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border-radius: 0 6px 6px 0;
             color: #2a4365;
         }
         
@@ -227,9 +247,9 @@
         .success-box {
             background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
             border-left: 5px solid #276749;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border-radius: 0 6px 6px 0;
             color: #22543d;
         }
         
@@ -242,13 +262,23 @@
             width: 100%;
             border-collapse: collapse;
             margin: 1rem 0;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            display: block;
+        }
+        
+        table thead,
+        table tbody {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
         }
         
         th, td {
             border: 1px solid #e2e8f0;
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 0.8rem;
             text-align: left;
+            word-wrap: break-word;
         }
         
         th {
@@ -261,12 +291,8 @@
             background: #f7fafc;
         }
         
-        tr:hover {
-            background: #edf2f7;
-        }
-        
         ul, ol {
-            margin-left: 1.5rem;
+            margin-left: 1.3rem;
             margin-bottom: 1rem;
         }
         
@@ -274,99 +300,38 @@
             margin-bottom: 0.5rem;
         }
         
-        .toc {
-            background: #f7fafc;
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .toc h3 {
-            margin-top: 0;
-            color: #1a365d;
-        }
-        
-        .toc ul {
-            list-style: none;
-            margin-left: 0;
-        }
-        
-        .toc li {
-            margin-bottom: 0.3rem;
-        }
-        
-        .toc a {
-            color: #2b6cb0;
-            text-decoration: none;
-        }
-        
-        .toc a:hover {
-            text-decoration: underline;
-        }
-        
-        .toc ul ul {
-            margin-left: 1.5rem;
-            margin-top: 0.3rem;
-        }
-        
         .diagram {
             background: #f7fafc;
             border: 2px dashed #cbd5e0;
-            padding: 1.5rem;
+            padding: 1rem;
             margin: 1rem 0;
-            border-radius: 8px;
-            text-align: center;
-            font-family: monospace;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        
+        .diagram pre {
+            background: transparent;
+            color: #333;
+            text-align: left;
+            margin: 0;
+            font-size: 0.75rem;
+            white-space: pre;
         }
         
         .queue-table th {
             background: #2c5282;
         }
         
-        .highlight {
-            background: #fefcbf;
-            padding: 0.1rem 0.3rem;
-            border-radius: 3px;
-        }
-        
         footer {
             background: #1a365d;
             color: white;
             text-align: center;
-            padding: 2rem;
+            padding: 1.5rem 1rem;
             margin-top: 2rem;
         }
         
         footer a {
             color: #90cdf4;
-        }
-        
-        @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-            
-            section {
-                padding: 1.5rem;
-            }
-            
-            pre {
-                font-size: 0.8rem;
-                padding: 1rem;
-            }
-            
-            table {
-                font-size: 0.85rem;
-            }
-            
-            th, td {
-                padding: 0.5rem;
-            }
         }
         
         .comment {
@@ -386,74 +351,157 @@
         }
         
         .skull {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.4rem;
+            }
+            
+            header p {
+                font-size: 0.9rem;
+            }
+            
+            .github-link {
+                position: static;
+                margin-top: 1rem;
+                text-align: center;
+            }
+            
+            .github-link a {
+                display: inline-flex;
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+            
+            .nav-toggle {
+                display: block;
+            }
+            
+            nav {
+                display: none;
+                position: static;
+                max-height: none;
+            }
+            
+            nav.active {
+                display: block;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            nav li {
+                border-bottom: 1px solid #4a5568;
+            }
+            
+            nav a {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .container {
+                padding: 0.5rem;
+            }
+            
+            section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            h3 {
+                font-size: 1.1rem;
+            }
+            
+            pre {
+                font-size: 0.75rem;
+                padding: 0.8rem;
+            }
+            
+            table {
+                font-size: 0.8rem;
+            }
+            
+            th, td {
+                padding: 0.5rem 0.4rem;
+            }
+            
+            .diagram pre {
+                font-size: 0.65rem;
+            }
+            
+            .danger-box,
+            .warning-box,
+            .info-box,
+            .success-box {
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.2rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            h3 {
+                font-size: 1rem;
+            }
+            
+            pre {
+                font-size: 0.7rem;
+            }
+            
+            table {
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-    <div class="github-link">
-        <a href="https://github.com/sidhu2690" target="_blank">
-            <i class="fab fa-github"></i>
-            sidhu2690
-        </a>
-    </div>
-
-    <h1>🖥️ HPC Quick Start Guide</h1>
-    <p>IISER Mohali High Performance Computing Cluster</p>
-</header>
+        <h1>🖥️ HPC Quick Start Guide</h1>
+        <p>IISER Mohali High Performance Computing Cluster</p>
+        <div class="github-link">
+            <a href="https://github.com/sidhu2690" target="_blank">
+                <i class="fab fa-github"></i>
+                sidhu2690
+            </a>
+        </div>
+    </header>
     
-    <nav>
+    <button class="nav-toggle" onclick="toggleNav()">
+        <i class="fas fa-bars"></i> Navigation Menu
+    </button>
+    
+    <nav id="mainNav">
         <ul>
-            <li><a href="#introduction">Introduction</a></li>
-            <li><a href="#basics">HPC Basics</a></li>
-            <li><a href="#ethics">Resource Ethics</a></li>
-            <li><a href="#queues">Queues</a></li>
-            <li><a href="#job-script">Job Scripts</a></li>
-            <li><a href="#submitting">Submitting Jobs</a></li>
-            <li><a href="#monitoring">Monitoring</a></li>
-            <li><a href="#checking-resources">Check Resources</a></li>
-            <li><a href="#examples">Examples</a></li>
-            <li><a href="#troubleshooting">Troubleshooting</a></li>
-            <li><a href="#commands">Quick Reference</a></li>
+            <li><a href="#introduction" onclick="closeNav()">Introduction</a></li>
+            <li><a href="#basics" onclick="closeNav()">HPC Basics</a></li>
+            <li><a href="#ethics" onclick="closeNav()">Resource Ethics</a></li>
+            <li><a href="#queues" onclick="closeNav()">Queues</a></li>
+            <li><a href="#job-script" onclick="closeNav()">Job Scripts</a></li>
+            <li><a href="#submitting" onclick="closeNav()">Submitting Jobs</a></li>
+            <li><a href="#monitoring" onclick="closeNav()">Monitoring</a></li>
+            <li><a href="#checking-resources" onclick="closeNav()">Check Resources</a></li>
+            <li><a href="#examples" onclick="closeNav()">Examples</a></li>
+            <li><a href="#troubleshooting" onclick="closeNav()">Troubleshooting</a></li>
+            <li><a href="#commands" onclick="closeNav()">Quick Reference</a></li>
         </ul>
     </nav>
     
     <div class="container">
-        
-        <!-- Table of Contents -->
-        <section>
-            <div class="toc">
-                <h3>📋 Table of Contents</h3>
-                <ul>
-                    <li><a href="#introduction">1. Introduction</a></li>
-                    <li><a href="#basics">2. HPC Basics</a>
-                        <ul>
-                            <li><a href="#what-is-node">What is a Node?</a></li>
-                            <li><a href="#what-is-core">What is a Core?</a></li>
-                            <li><a href="#cluster-architecture">Cluster Architecture</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#ethics">3. Resource Ethics & Responsibilities</a></li>
-                    <li><a href="#queues">4. Job Queues</a></li>
-                    <li><a href="#job-script">5. Writing PBS Job Scripts</a>
-                        <ul>
-                            <li><a href="#basic-structure">Basic Structure</a></li>
-                            <li><a href="#pbs-directives">PBS Directives Explained</a></li>
-                            <li><a href="#walltime">Setting Walltime</a></li>
-                            <li><a href="#log-files">Log Files Configuration</a></li>
-                            <li><a href="#targeting-nodes">Targeting Specific Nodes</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#submitting">6. Submitting Jobs</a></li>
-                    <li><a href="#monitoring">7. Monitoring Jobs</a></li>
-                    <li><a href="#checking-resources">8. Checking Available Resources</a></li>
-                    <li><a href="#examples">9. Complete Examples</a></li>
-                    <li><a href="#troubleshooting">10. Troubleshooting</a></li>
-                    <li><a href="#commands">11. Quick Reference Commands</a></li>
-                </ul>
-            </div>
-        </section>
         
         <!-- Introduction -->
         <section id="introduction">
@@ -487,43 +535,47 @@
             </p>
             
             <div class="diagram">
-                <pre style="background: transparent; color: #333; text-align: left; display: inline-block;">
-┌─────────────────────────────────────────────────────────────────┐
-│                         HPC CLUSTER                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   ┌──────────┐    ┌──────────┐         ┌──────────┐             │
-│   │  Login   │    │  Login   │         │  Master  │             │
-│   │  Node 1  │    │  Node 2  │         │  Nodes   │             │
-│   └────┬─────┘    └────┬─────┘         └────┬─────┘             │
-│        │               │                    │                   │
-│        └───────────────┴────────────────────┘                   │
-│                        │                                        │
-│            ┌───────────┴───────────┐                            │
-│            │    High-Speed Network │                            │
-│            └───────────┬───────────┘                            │
-│                        │                                        │
-│   ┌────────────────────┼────────────────────┐                   │
-│   │                    │                    │                   │
-│   ▼                    ▼                    ▼                   │
-│ ┌──────────┐      ┌──────────┐        ┌──────────┐              │
-│ │ Compute  │      │ Compute  │  ...   │ Compute  │              │
-│ │ Node     │      │ Node     │        │ Node     │              │
-│ │ (gpc1)   │      │ (gpc2)   │        │ (gpc32)  │              │
-│ │          │      │          │        │          │              │
-│ │ 52 cores │      │ 52 cores │        │ 52 cores │              │
-│ └──────────┘      └──────────┘        └──────────┘              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-                </pre>
+                <pre>
+┌───────────────────────────────────────────────────────┐
+│                          HPC CLUSTER                  │
+├───────────────────────────────────────────────────────┤
+│                                                       │
+│   ┌──────────┐    ┌──────────┐         ┌──────────┐   │
+│   │  Login   │    │  Login   │         │  Master  │   │
+│   │  Node 1  │    │  Node 2  │         │  Nodes   │   │
+│   └────┬─────┘    └────┬─────┘         └────┬─────┘   │
+│        │               │                    │         │
+│        └───────────────┴────────────────────┘         │
+│                        │                              │
+│            ┌───────────┴───────────┐                  │
+│            │    High-Speed Network │                  │
+│            └───────────┬───────────┘                  │
+│                        │                              │
+│   ┌────────────────────┼────────────────────┐         │
+│   │                    │                    │         │
+│   ▼                    ▼                    ▼         │
+│ ┌──────────┐      ┌──────────┐        ┌──────────┐    │
+│ │ Compute  │      │ Compute  │  ...   │ Compute  │    │
+│ │ Node     │      │ Node     │        │ Node     │    │
+│ │ (gpc1)   │      │ (gpc2)   │        │ (gpc32)  │    │
+│ │          │      │          │        │          │    │
+│ │ 52 cores │      │ 52 cores │        │ 52 cores │    │
+│ └──────────┘      └──────────┘        └──────────┘    │
+│                                                       │
+└───────────────────────────────────────────────────────┘
+
+</pre>
             </div>
             
             <table>
+                <thead>
                 <tr>
                     <th>Node Type</th>
                     <th>Names</th>
                     <th>Purpose</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td>Login Nodes</td>
                     <td>login1, login2</td>
@@ -539,6 +591,7 @@
                     <td>gpu1-gpu3</td>
                     <td>For GPU-accelerated computations</td>
                 </tr>
+                </tbody>
             </table>
             
             <h3 id="what-is-core">What is a Core?</h3>
@@ -573,10 +626,13 @@
             
             <h3 id="cluster-architecture">Cluster Architecture Summary</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Component</th>
                     <th>Specification</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td>Total Compute Nodes</td>
                     <td>~39 nodes (gpc1-gpc32, bmc1-bmc7, gpu1-gpu3)</td>
@@ -597,6 +653,7 @@
                     <td>GPU Nodes</td>
                     <td>4 × Tesla T4 16GB PCIe per GPU node</td>
                 </tr>
+                </tbody>
             </table>
         </section>
         
@@ -618,11 +675,14 @@
             
             <h3>❌ What NOT to Do — RESOURCE CRIMES</h3>
             <table>
+                <thead>
                 <tr>
                     <th style="background: #c53030;">Violation</th>
                     <th style="background: #c53030;">Problem</th>
                     <th style="background: #c53030;">Correct Approach</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><strong>Requesting more cores than your program uses</strong></td>
                     <td>Idle cores are blocked from other users</td>
@@ -653,6 +713,7 @@
                     <td>Fills shared storage</td>
                     <td>Delete temporary files after job completes</td>
                 </tr>
+                </tbody>
             </table>
             
             <div class="danger-box">
@@ -722,12 +783,15 @@ top -u $USER
             
             <h3>CPU Queues</h3>
             <table class="queue-table">
+                <thead>
                 <tr>
                     <th>Queue Name</th>
                     <th>Max Walltime</th>
                     <th>Max Cores/User</th>
                     <th>Typical Use Case</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><code>default</code></td>
                     <td>8 hours</td>
@@ -752,14 +816,18 @@ top -u $USER
                     <td>50 cores</td>
                     <td>Extended calculations (use sparingly!)</td>
                 </tr>
+                </tbody>
             </table>
             
             <h3>GPU Queues</h3>
             <table class="queue-table">
+                <thead>
                 <tr>
                     <th>Queue Name</th>
                     <th>Description</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><code>gpushort</code></td>
                     <td>Short GPU jobs</td>
@@ -768,6 +836,7 @@ top -u $USER
                     <td><code>gpulong</code></td>
                     <td>Long GPU jobs</td>
                 </tr>
+                </tbody>
             </table>
             
             <h3>Check Queue Details</h3>
@@ -845,11 +914,14 @@ python my_script.py</code></pre>
             
             <h3 id="pbs-directives">PBS Directives Explained</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Directive</th>
                     <th>Description</th>
                     <th>Example</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><code>#PBS -N</code></td>
                     <td>Job name (max 15 characters recommended)</td>
@@ -895,6 +967,7 @@ python my_script.py</code></pre>
                     <td>When to send email (a=abort, b=begin, e=end)</td>
                     <td><code>#PBS -m abe</code></td>
                 </tr>
+                </tbody>
             </table>
             
             <h3 id="walltime">Setting Walltime</h3>
@@ -1246,9 +1319,7 @@ checkfree short
 checkfree default
 checkfree infinity
 checkfree gpushort
-checkfree gpulong
-
-            </code></pre>
+checkfree gpulong</code></pre>
             
             <div class="danger-box">
                 <h3><span class="skull">🚨</span> Important: After Checking Free Cores</h3>
@@ -1383,10 +1454,13 @@ echo "Running on node: $(hostname)"
             
             <h3>Job Stuck in Queue (Q status)</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Possible Cause</th>
                     <th>Solution</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td>Requested resources not available</td>
                     <td>Use the <a href="#check-free-cores">free cores checking script</a> to find available resources, then reduce core/node request</td>
@@ -1403,6 +1477,7 @@ echo "Running on node: $(hostname)"
                     <td>Exceeded user limits</td>
                     <td>Check <code>qstat -Qf</code> for max_user_res.ncpus limits</td>
                 </tr>
+                </tbody>
             </table>
             
             <h3>Job Held (H status)</h3>
@@ -1468,10 +1543,13 @@ pbsnodes gpc25
             
             <h3>Job Submission & Control</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Command</th>
                     <th>Description</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><code>qsub job.sh</code></td>
                     <td>Submit a job script</td>
@@ -1492,14 +1570,18 @@ pbsnodes gpc25
                     <td><code>qrls JOB_ID</code></td>
                     <td>Release a held job</td>
                 </tr>
+                </tbody>
             </table>
             
             <h3>Job Monitoring</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Command</th>
                     <th>Description</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><code>qstat</code></td>
                     <td>Show all jobs in queue</td>
@@ -1520,14 +1602,18 @@ pbsnodes gpc25
                     <td><code>qstat -Qf</code></td>
                     <td>Detailed queue information</td>
                 </tr>
+                </tbody>
             </table>
             
             <h3>Node & Resource Information</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Command</th>
                     <th>Description</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><code>pbsnodes -a</code></td>
                     <td>Show all nodes status</td>
@@ -1540,14 +1626,18 @@ pbsnodes gpc25
                     <td><code>checkfree long</code></td>
                     <td>Check free cores in long queue (after adding function to .bashrc)</td>
                 </tr>
+                </tbody>
             </table>
             
             <h3>Module Management</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Command</th>
                     <th>Description</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><code>module avail</code></td>
                     <td>List available modules</td>
@@ -1568,14 +1658,18 @@ pbsnodes gpc25
                     <td><code>module purge</code></td>
                     <td>Unload all modules</td>
                 </tr>
+                </tbody>
             </table>
             
             <h3>PBS Environment Variables</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Variable</th>
                     <th>Description</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td><code>$PBS_O_WORKDIR</code></td>
                     <td>Directory where qsub was executed</td>
@@ -1596,6 +1690,7 @@ pbsnodes gpc25
                     <td><code>$PBS_QUEUE</code></td>
                     <td>Queue the job is running in</td>
                 </tr>
+                </tbody>
             </table>
         </section>
         
@@ -1653,5 +1748,30 @@ pbsnodes gpc25
         </p>
     </footer>
     
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+        }
+        
+        function closeNav() {
+            const nav = document.getElementById('mainNav');
+            if (window.innerWidth <= 768) {
+                nav.classList.remove('active');
+            }
+        }
+        
+        // Close nav when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('mainNav');
+            const toggle = document.querySelector('.nav-toggle');
+            
+            if (window.innerWidth <= 768 && 
+                !nav.contains(event.target) && 
+                !toggle.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
