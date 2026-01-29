@@ -300,22 +300,109 @@
             margin-bottom: 0.5rem;
         }
         
-        .diagram {
+        .cluster-diagram {
             background: #f7fafc;
-            border: 2px dashed #cbd5e0;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 6px;
-            overflow-x: auto;
+            border: 2px solid #cbd5e0;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
         }
         
-        .diagram pre {
-            background: transparent;
-            color: #333;
-            text-align: left;
-            margin: 0;
+        .diagram-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .diagram-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-label {
+            text-align: center;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .node-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .node-box {
+            background: white;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            padding: 0.8rem;
+            min-width: 100px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .login-node {
+            border-color: #3182ce;
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+        }
+        
+        .master-node {
+            border-color: #805ad5;
+            background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%);
+        }
+        
+        .compute-node {
+            border-color: #48bb78;
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+        }
+        
+        .node-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        
+        .node-desc {
             font-size: 0.75rem;
-            white-space: pre;
+            color: #718096;
+        }
+        
+        .node-cores {
+            font-size: 0.75rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
+        .network-connector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+            gap: 0.5rem;
+        }
+        
+        .connector-line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #cbd5e0, transparent);
+            max-width: 150px;
+        }
+        
+        .network-label {
+            background: #2d3748;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
         }
         
         .queue-table th {
@@ -434,8 +521,31 @@
                 padding: 0.5rem 0.4rem;
             }
             
-            .diagram pre {
-                font-size: 0.65rem;
+            .diagram-title {
+                font-size: 0.9rem;
+            }
+            
+            .node-box {
+                min-width: 80px;
+                padding: 0.6rem;
+            }
+            
+            .node-title {
+                font-size: 0.8rem;
+            }
+            
+            .node-desc,
+            .node-cores {
+                font-size: 0.7rem;
+            }
+            
+            .network-label {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.6rem;
+            }
+            
+            .connector-line {
+                max-width: 50px;
             }
             
             .danger-box,
@@ -465,6 +575,19 @@
             
             table {
                 font-size: 0.75rem;
+            }
+            
+            .diagram-title {
+                font-size: 0.8rem;
+            }
+            
+            .node-box {
+                min-width: 70px;
+                padding: 0.5rem 0.3rem;
+            }
+            
+            .network-label {
+                font-size: 0.65rem;
             }
         }
     </style>
@@ -534,37 +657,54 @@
                 high-speed network.
             </p>
             
-            <div class="diagram">
-                <pre>
-┌───────────────────────────────────────────────────────┐
-│                          HPC CLUSTER                  │
-├───────────────────────────────────────────────────────┤
-│                                                       │
-│   ┌──────────┐    ┌──────────┐         ┌──────────┐   │
-│   │  Login   │    │  Login   │         │  Master  │   │
-│   │  Node 1  │    │  Node 2  │         │  Nodes   │   │
-│   └────┬─────┘    └────┬─────┘         └────┬─────┘   │
-│        │               │                    │         │
-│        └───────────────┴────────────────────┘         │
-│                        │                              │
-│            ┌───────────┴───────────┐                  │
-│            │    High-Speed Network │                  │
-│            └───────────┬───────────┘                  │
-│                        │                              │
-│   ┌────────────────────┼────────────────────┐         │
-│   │                    │                    │         │
-│   ▼                    ▼                    ▼         │
-│ ┌──────────┐      ┌──────────┐        ┌──────────┐    │
-│ │ Compute  │      │ Compute  │  ...   │ Compute  │    │
-│ │ Node     │      │ Node     │        │ Node     │    │
-│ │ (gpc1)   │      │ (gpc2)   │        │ (gpc32)  │    │
-│ │          │      │          │        │          │    │
-│ │ 52 cores │      │ 52 cores │        │ 52 cores │    │
-│ └──────────┘      └──────────┘        └──────────┘    │
-│                                                       │
-└───────────────────────────────────────────────────────┘
-
-</pre>
+            <div class="cluster-diagram">
+                <div class="diagram-title">HPC CLUSTER ARCHITECTURE</div>
+                
+                <div class="diagram-section">
+                    <div class="section-label">Access Layer</div>
+                    <div class="node-group">
+                        <div class="node-box login-node">
+                            <div class="node-title">Login Node 1</div>
+                            <div class="node-desc">Submit jobs</div>
+                        </div>
+                        <div class="node-box login-node">
+                            <div class="node-title">Login Node 2</div>
+                            <div class="node-desc">Edit files</div>
+                        </div>
+                        <div class="node-box master-node">
+                            <div class="node-title">Master Node</div>
+                            <div class="node-desc">Job scheduler</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="network-connector">
+                    <div class="connector-line"></div>
+                    <div class="network-label">High-Speed Network</div>
+                    <div class="connector-line"></div>
+                </div>
+                
+                <div class="diagram-section">
+                    <div class="section-label">Compute Layer</div>
+                    <div class="node-group">
+                        <div class="node-box compute-node">
+                            <div class="node-title">gpc1</div>
+                            <div class="node-cores">52 cores</div>
+                        </div>
+                        <div class="node-box compute-node">
+                            <div class="node-title">gpc2</div>
+                            <div class="node-cores">52 cores</div>
+                        </div>
+                        <div class="node-box compute-node">
+                            <div class="node-title">...</div>
+                            <div class="node-cores">more nodes</div>
+                        </div>
+                        <div class="node-box compute-node">
+                            <div class="node-title">gpc32</div>
+                            <div class="node-cores">52 cores</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <table>
@@ -1286,7 +1426,30 @@ END {
 <span class="comment"># For 'infinity' queue - change to: /queue = infinity/</span></code></pre>
             
             <h4>Add This Function to Your ~/.bashrc (Recommended)</h4>
-            <pre><code><span class="comment"># Add this to your ~/.bashrc file for easy access</span>
+            <p>Follow these steps to add the <code>checkfree</code> function permanently:</p>
+            
+            <div class="info-box">
+                <h3>📝 Step-by-Step Instructions</h3>
+                <ol>
+                    <li><strong>Open your .bashrc file:</strong>
+                        <pre style="margin: 0.5rem 0;"><code>nano ~/.bashrc</code></pre>
+                    </li>
+                    <li><strong>Scroll to the end of the file</strong> (use arrow keys or Page Down)</li>
+                    <li><strong>Copy and paste the function below</strong> at the end of the file</li>
+                    <li><strong>Save and exit:</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Press <code>Ctrl + S</code> to save (then press Enter to confirm)</li>
+                            <li>Press <code>Ctrl + X</code> to exit nano</li>
+                        </ul>
+                    </li>
+                    <li><strong>Reload your .bashrc:</strong>
+                        <pre style="margin: 0.5rem 0;"><code>source ~/.bashrc</code></pre>
+                    </li>
+                </ol>
+            </div>
+            
+            <h4>Function Code to Add:</h4>
+            <pre><code><span class="comment"># Function to check free cores in HPC queues</span>
 checkfree() {
     local queue=${1:-long}
     echo "=== Free cores in '$queue' queue ==="
@@ -1308,18 +1471,26 @@ checkfree() {
       print "Total free cores  =", sum;
       print "Fully free nodes  =", fullfree+0;
     }'
-}
+}</code></pre>
 
-<span class="comment"># After adding to ~/.bashrc, reload it:</span>
-source ~/.bashrc
-
-<span class="comment"># Now you can use:</span>
+            <h4>How to Use After Adding:</h4>
+            <pre><code><span class="comment"># Check different queues:</span>
 checkfree long
 checkfree short
 checkfree default
 checkfree infinity
 checkfree gpushort
-checkfree gpulong</code></pre>
+checkfree gpulong
+
+<span class="comment"># If no queue is specified, it defaults to 'long':</span>
+checkfree</code></pre>
+
+            <div class="success-box">
+                <h3>✅ Verification</h3>
+                <p>To verify the function was added correctly, type:</p>
+                <pre style="margin: 0.5rem 0;"><code>type checkfree</code></pre>
+                <p>You should see the function definition. If you see "checkfree: not found", the function wasn't added properly.</p>
+            </div>
             
             <div class="danger-box">
                 <h3><span class="skull">🚨</span> Important: After Checking Free Cores</h3>
