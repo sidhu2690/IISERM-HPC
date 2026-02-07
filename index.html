@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1699,346 +1700,184 @@ pbsnodes gpc25
 
 <!-- GPU Computing -->
 <section id="gpu-computing">
-    <h2>10. GPU Computing</h2>
-    
-    <p>
-        The IISER Mohali HPC cluster includes GPU nodes equipped with NVIDIA Tesla T4 GPUs 
-        for accelerated computing tasks such as deep learning, molecular dynamics, and 
-        scientific simulations.
-    </p>
-    
-    <div class="info-box">
-        <h3>🎮 GPU Cluster Overview</h3>
-        <ul>
-            <li><strong>3 GPU nodes:</strong> gpu1, gpu2, gpu3</li>
-            <li><strong>GPUs per node:</strong> 4 × NVIDIA Tesla T4</li>
-            <li><strong>Memory per GPU:</strong> 15 GB (15360 MiB)</li>
-            <li><strong>CUDA Version:</strong> 11.6</li>
-            <li><strong>Driver Version:</strong> 510.47.03</li>
-        </ul>
-    </div>
-    
-    <h3>GPU Node Specifications</h3>
-    <table>
-        <thead>
-        <tr>
-            <th>Node</th>
-            <th>Queue</th>
-            <th>CPU Cores</th>
-            <th>Memory</th>
-            <th>GPUs</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td><code>gpu1</code></td>
-            <td><code>gpushort</code></td>
-            <td>52 cores</td>
-            <td>~744 GB</td>
-            <td>4 × Tesla T4 (15 GB each)</td>
-        </tr>
-        <tr>
-            <td><code>gpu2</code></td>
-            <td><code>gpulong</code></td>
-            <td>104 cores</td>
-            <td>~1.5 TB</td>
-            <td>4 × Tesla T4 (15 GB each)</td>
-        </tr>
-        <tr>
-            <td><code>gpu3</code></td>
-            <td><code>gpulong</code></td>
-            <td>52 cores</td>
-            <td>~744 GB</td>
-            <td>4 × Tesla T4 (15 GB each)</td>
-        </tr>
-        </tbody>
-    </table>
-    
-    <h3>GPU Queues</h3>
-    <table class="queue-table">
-        <thead>
-        <tr>
-            <th>Queue Name</th>
-            <th>Nodes</th>
-            <th>Walltime Limit</th>
-            <th>Max Jobs/User</th>
-            <th>Typical Use</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td><code>gpushort</code></td>
-            <td>gpu1</td>
-            <td>No explicit limit*</td>
-            <td>300</td>
-            <td>Testing, short GPU jobs</td>
-        </tr>
-        <tr>
-            <td><code>gpulong</code></td>
-            <td>gpu2, gpu3</td>
-            <td>No explicit limit*</td>
-            <td>300</td>
-            <td>Training, long GPU jobs</td>
-        </tr>
-        </tbody>
-    </table>
-    <p style="font-size: 0.85rem; color: #666;">
-        *No explicit walltime limit is configured, but always set a reasonable walltime in your job script.
-    </p>
-    
-    <h3 id="gpu-interactive">Interactive GPU Sessions</h3>
-    <p>Start an interactive session on a GPU node for testing and debugging:</p>
-    
-    <pre><code><span class="comment"># Basic interactive GPU session (gpushort queue → gpu1)</span>
-qsub -I -q gpushort
 
-<span class="comment"># Interactive session on gpulong queue (gpu2 or gpu3)</span>
-qsub -I -q gpulong
 
-<span class="comment"># Request specific number of CPU cores</span>
-qsub -I -q gpulong -l select=1:ncpus=8
 
-<span class="comment"># Request specific GPU node</span>
-qsub -I -q gpulong -l select=1:host=gpu2
+<h2>10. GPU Computing</h2>
 
-<span class="comment"># Request specific node with specific CPU cores</span>
-qsub -I -q gpulong -l select=1:host=gpu2:ncpus=16
+<div class="info-box">
+    <h3>🎮 GPU Cluster Overview</h3>
+    <ul>
+        <li><strong>3 GPU nodes:</strong> gpu1, gpu2, gpu3</li>
+        <li><strong>GPUs per node:</strong> 4 × NVIDIA Tesla T4</li>
+        <li><strong>Memory per GPU:</strong> 15 GB (15360 MiB)</li>
+        <li><strong>CUDA Version:</strong> 11.6</li>
+        <li><strong>Driver Version:</strong> 510.47.03</li>
+    </ul>
+</div>
 
-<span class="comment"># With walltime limit</span>
-qsub -I -q gpulong -l select=1:ncpus=8,walltime=12:00:00</code></pre>
-     
-    <h3 id="gpu-check">Checking GPU Status</h3>
-    <p>Once on a GPU node, use <code>nvidia-smi</code> to check GPU status:</p>
-    
-    <pre><code><span class="comment"># Start interactive session</span>
-qsub -I -q gpushort
+<h3>GPU Node Specifications</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Node</th>
+        <th>Queue</th>
+        <th>CPU Cores</th>
+        <th>Memory</th>
+        <th>GPUs</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><code>gpu1</code></td>
+        <td><code>gpushort</code></td>
+        <td>52 cores</td>
+        <td>~744 GB</td>
+        <td>4 × Tesla T4 (15 GB each)</td>
+    </tr>
+    <tr>
+        <td><code>gpu2</code></td>
+        <td><code>gpulong</code></td>
+        <td>104 cores</td>
+        <td>~1.5 TB</td>
+        <td>4 × Tesla T4 (15 GB each)</td>
+    </tr>
+    <tr>
+        <td><code>gpu3</code></td>
+        <td><code>gpulong</code></td>
+        <td>52 cores</td>
+        <td>~744 GB</td>
+        <td>4 × Tesla T4 (15 GB each)</td>
+    </tr>
+    </tbody>
+</table>
 
-<span class="comment"># Check GPU status</span>
-nvidia-smi
+<h3>GPU Queues</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Queue Name</th>
+        <th>Nodes</th>
+        <th>Status</th>
+        <th>Workaround</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><code>gpushort</code></td>
+        <td>gpu1</td>
+        <td>⚠️ Batch broken</td>
+        <td>Use <code>qsub -I -q gpushort</code></td>
+    </tr>
+    <tr>
+        <td><code>gpulong</code></td>
+        <td>gpu2, gpu3</td>
+        <td>⚠️ Batch broken</td>
+        <td>Use <code>qsub -I -q gpulong</code></td>
+    </tr>
+    </tbody>
+</table>
 
-<span class="comment"># Example output:</span>
-<span class="output">+-----------------------------------------------------------------------------+
-| NVIDIA-SMI 510.47.03    Driver Version: 510.47.03    CUDA Version: 11.6     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|===============================+======================+======================|
-|   0  Tesla T4            Off  | 00000000:60:00.0 Off |                    0 |
-| N/A   31C    P8    14W /  70W |      0MiB / 15360MiB |      0%      Default |
-+-------------------------------+----------------------+----------------------+
-|   1  Tesla T4            Off  | 00000000:61:00.0 Off |                    0 |
-| N/A   35C    P8    14W /  70W |      0MiB / 15360MiB |      0%      Default |
-+-------------------------------+----------------------+----------------------+
-|   2  Tesla T4            Off  | 00000000:DA:00.0 Off |                    0 |
-| N/A   33C    P8    13W /  70W |      0MiB / 15360MiB |      0%      Default |
-+-------------------------------+----------------------+----------------------+
-|   3  Tesla T4            Off  | 00000000:DB:00.0 Off |                    0 |
-| N/A   29C    P8    14W /  70W |      0MiB / 15360MiB |      0%      Default |
-+-------------------------------+----------------------+----------------------+</span>
+<h3>Working Solution: Interactive + nohup</h3>
+<p>
+    Since batch submission is broken, you must use <strong>interactive sessions</strong> combined 
+    with <strong>nohup</strong> to run long GPU jobs. This allows your job to continue running even 
+    after you disconnect from the terminal.
+</p>
 
-<span class="comment"># Key columns to check:</span>
-<span class="comment"># - GPU: GPU index (0, 1, 2, 3)</span>
-<span class="comment"># - Memory-Usage: VRAM used / total</span>
-<span class="comment"># - GPU-Util: Current GPU utilization percentage</span>
+<h4>Step 1: Request Interactive GPU Session</h4>
+<pre><code><span class="comment"># Request 8 hours on gpu3 with 16 CPU cores</span>
+qsub -I -q gpulong -l select=1:ncpus=16:host=gpu3,walltime=8:00:00
 
-<span class="comment"># Monitor GPU usage continuously (updates every 1 second)</span>
-watch -n 1 nvidia-smi</code></pre>
-    
-    <h3 id="cuda-visible-devices">Controlling GPU Access: CUDA_VISIBLE_DEVICES</h3>
-    
-    <p>
-        Since you cannot request specific GPUs via PBS, you must use the 
-        <code>CUDA_VISIBLE_DEVICES</code> environment variable to control which GPU(s) 
-        your program can see and use.
-    </p>
-    
-    <div class="cluster-diagram">
-        <div class="diagram-title">GPU VISIBILITY CONTROL</div>
-        
-        <div class="diagram-section">
-            <div class="section-label">Physical GPUs on Node</div>
-            <div class="node-group">
-                <div class="node-box" style="border-color: #48bb78; background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);">
-                    <div class="node-title">GPU 0</div>
-                    <div class="node-desc">Tesla T4</div>
-                </div>
-                <div class="node-box" style="border-color: #48bb78; background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);">
-                    <div class="node-title">GPU 1</div>
-                    <div class="node-desc">Tesla T4</div>
-                </div>
-                <div class="node-box" style="border-color: #48bb78; background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);">
-                    <div class="node-title">GPU 2</div>
-                    <div class="node-desc">Tesla T4</div>
-                </div>
-                <div class="node-box" style="border-color: #48bb78; background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);">
-                    <div class="node-title">GPU 3</div>
-                    <div class="node-desc">Tesla T4</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="network-connector">
-            <div class="connector-line"></div>
-            <div class="network-label">CUDA_VISIBLE_DEVICES=0</div>
-            <div class="connector-line"></div>
-        </div>
-        
-        <div class="diagram-section">
-            <div class="section-label">What Your Program Sees</div>
-            <div class="node-group">
-                <div class="node-box" style="border-color: #3182ce; background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);">
-                    <div class="node-title">cuda:0</div>
-                    <div class="node-desc">Only GPU 0 visible</div>
-                </div>
-                <div class="node-box" style="border-color: #cbd5e0; background: #f7fafc; opacity: 0.5;">
-                    <div class="node-title">Hidden</div>
-                    <div class="node-desc">GPU 1</div>
-                </div>
-                <div class="node-box" style="border-color: #cbd5e0; background: #f7fafc; opacity: 0.5;">
-                    <div class="node-title">Hidden</div>
-                    <div class="node-desc">GPU 2</div>
-                </div>
-                <div class="node-box" style="border-color: #cbd5e0; background: #f7fafc; opacity: 0.5;">
-                    <div class="node-title">Hidden</div>
-                    <div class="node-desc">GPU 3</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <h4>CUDA_VISIBLE_DEVICES Examples</h4>
-    <pre><code><span class="comment"># Use only GPU 0</span>
-export CUDA_VISIBLE_DEVICES=0
+<span class="comment"># Explanation:</span>
+<span class="comment"># -I                  = Interactive session</span>
+<span class="comment"># -q gpulong          = GPU queue (use gpushort for gpu1)</span>
+<span class="comment"># select=1:ncpus=16   = 16 CPU cores</span>
+<span class="comment"># host=gpu3           = Target gpu3 specifically (or gpu2)</span>
+<span class="comment"># walltime=8:00:00    = 8 hours maximum (adjust as needed)</span>
 
-<span class="comment"># Use only GPU 1</span>
-export CUDA_VISIBLE_DEVICES=1
+<span class="comment"># Once accepted, you'll land on the GPU node:</span>
+<span class="output">[user@gpu3 ~]$</span></code></pre>
 
-<span class="comment"># Use GPUs 0 and 1 (for multi-GPU training)</span>
-export CUDA_VISIBLE_DEVICES=0,1
+<h4>Step 2: Setup Environment on GPU Node</h4>
+<pre><code><span class="comment"># Navigate to your project directory</span>
+cd /persistent/data2/username/your_project
 
-<span class="comment"># Use GPUs 2 and 3</span>
-export CUDA_VISIBLE_DEVICES=2,3
+<span class="comment"># Load Anaconda and activate your environment</span>
+module load anaconda3
+conda activate your_env
 
-<span class="comment"># Use all 4 GPUs (only if your code needs it!)</span>
+<span class="comment"># Set GPU visibility (use all 4 GPUs or specific ones)</span>
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 
-<span class="comment"># Disable all GPUs (force CPU-only execution)</span>
-export CUDA_VISIBLE_DEVICES=""</code></pre>
-    
-        
-    <h3 id="gpu-job-scripts">GPU Job Script Examples</h3>
-    
-    <h4>Example 1: Single GPU PyTorch Job</h4>
-    <pre><code><span class="comment">#!/bin/bash</span>
-<span class="pbs-directive">#PBS -N pytorch_train</span>
-<span class="pbs-directive">#PBS -q gpulong</span>
-<span class="pbs-directive">#PBS -l select=1:ncpus=8</span>
-<span class="pbs-directive">#PBS -l walltime=24:00:00</span>
-<span class="pbs-directive">#PBS -o pytorch_out.log</span>
-<span class="pbs-directive">#PBS -e pytorch_err.log</span>
+<span class="comment"># Disable InfiniBand (prevents NCCL errors on this cluster)</span>
+export NCCL_IB_DISABLE=1
 
-cd <span class="variable">$PBS_O_WORKDIR</span>
+<span class="comment"># Set OpenMP threads (optional, for CPU parallelism)</span>
+export OMP_NUM_THREADS=4
 
-<span class="comment"># Load required modules</span>
-module load anaconda3
+<span class="comment"># Ensure Python output is not buffered (see logs in real-time)</span>
+export PYTHONUNBUFFERED=1</code></pre>
 
-<span class="comment"># IMPORTANT: Restrict to single GPU</span>
-export CUDA_VISIBLE_DEVICES=0
+<h4>Step 3: Launch Job with nohup (Detached Mode)</h4>
+<pre><code><span class="comment"># Run your training in background with nohup</span>
+nohup torchrun --nproc_per_node=4 train.py > train.log 2>&1 &
 
-<span class="comment"># Verify GPU is visible</span>
-echo "=== GPU Status ==="
-nvidia-smi
-echo "=================="
+<span class="comment"># Explanation:</span>
+<span class="comment"># nohup              = Keeps process running after disconnect</span>
+<span class="comment"># torchrun           = PyTorch distributed launcher</span>
+<span class="comment"># --nproc_per_node=4 = Use 4 GPUs (match CUDA_VISIBLE_DEVICES)</span>
+<span class="comment"># > train.log 2>&1   = Redirect all output to train.log</span>
+<span class="comment"># &                  = Run in background</span>
 
-<span class="comment"># Run training</span>
-python train.py</code></pre>
-    
-    <h4>Example 2: Multi-GPU PyTorch Job (DataParallel)</h4>
-    <pre><code><span class="comment">#!/bin/bash</span>
-<span class="pbs-directive">#PBS -N pytorch_multigpu</span>
-<span class="pbs-directive">#PBS -q gpulong</span>
-<span class="pbs-directive">#PBS -l select=1:ncpus=16</span>
-<span class="pbs-directive">#PBS -l walltime=48:00:00</span>
-<span class="pbs-directive">#PBS -o multigpu_out.log</span>
-<span class="pbs-directive">#PBS -e multigpu_err.log</span>
+<span class="comment"># After running, you'll see:</span>
+<span class="output">[1] 123456</span>
 
-cd <span class="variable">$PBS_O_WORKDIR</span>
+<span class="comment"># Note the PID (123456) for monitoring</span>
+echo $!
 
-module load anaconda3
+<span class="comment"># For single-GPU jobs (no torchrun needed):</span>
+nohup python train.py > train.log 2>&1 &</code></pre>
 
-<span class="comment"># Use 2 GPUs for DataParallel training</span>
-export CUDA_VISIBLE_DEVICES=0,1
+<h4>Step 4: Monitor Your nohup Job</h4>
+<pre><code><span class="comment"># Watch training log in real-time</span>
+tail -f train.log
 
-<span class="comment"># Verify GPUs</span>
-echo "Using GPUs: $CUDA_VISIBLE_DEVICES"
-nvidia-smi
+<span class="comment"># Monitor GPU usage (updates every 1 second)</span>
+<span class="comment"># This will show your current running nohup jobs</span>
+watch -n 1 nvidia-smi
 
-<span class="comment"># Your PyTorch code should use:</span>
-<span class="comment"># model = nn.DataParallel(model)</span>
-python train_distributed.py</code></pre>
-    
-    <h4>Example 3: GPU Job with Specific Node</h4>
-    <pre><code><span class="comment">#!/bin/bash</span>
-<span class="comment"># Target gpu2 specifically (has more CPU cores and memory)</span>
+<span class="comment"># Check if your process is still running</span>
+ps aux | grep train.py
 
-<span class="pbs-directive">#PBS -N gpu2_job</span>
-<span class="pbs-directive">#PBS -q gpulong</span>
-<span class="pbs-directive">#PBS -l select=1:host=gpu2:ncpus=16</span>
-<span class="pbs-directive">#PBS -l walltime=72:00:00</span>
-<span class="pbs-directive">#PBS -o output.log</span>
-<span class="pbs-directive">#PBS -e error.log</span>
+<span class="comment"># See all your running processes</span>
+ps aux | grep $USER</code></pre>
 
-cd <span class="variable">$PBS_O_WORKDIR</span>
+<h4>Step 5: Kill a nohup Job</h4>
+<pre><code><span class="comment"># Find the process ID (PID)</span>
+ps aux | grep train.py
 
-module load anaconda3
+<span class="comment"># Kill by PID</span>
+kill 123456
 
-<span class="comment"># Use GPU 0 on gpu2</span>
-export CUDA_VISIBLE_DEVICES=0
+<span class="comment"># Force kill if it doesn't stop</span>
+kill -9 123456
 
-echo "Running on node: $(hostname)"
-echo "Using GPU: $CUDA_VISIBLE_DEVICES"
+<span class="comment"># Or kill all your Python processes</span>
+pkill -u $USER python</code></pre>
 
-python large_model_train.py</code></pre>
-    
-          <h3>GPU vs CPU Job Comparison</h3>
-    <table>
-        <thead>
-        <tr>
-            <th>Aspect</th>
-            <th>CPU Job</th>
-            <th>GPU Job</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Queue</td>
-            <td><code>default</code>, <code>short</code>, <code>long</code>, <code>infinity</code></td>
-            <td><code>gpushort</code>, <code>gpulong</code></td>
-        </tr>
-        <tr>
-            <td>Example submission</td>
-            <td><code>qsub -I -q long -l select=1:ncpus=16</code></td>
-            <td><code>qsub -I -q gpulong -l select=1:ncpus=8</code></td>
-        </tr>
-        <tr>
-            <td>Resource control</td>
-            <td><code>ppn=N</code> or <code>ncpus=N</code></td>
-            <td><code>CUDA_VISIBLE_DEVICES=N</code></td>
-        </tr>
-        <tr>
-            <td>Check status</td>
-            <td><code>top</code>, <code>htop</code></td>
-            <td><code>nvidia-smi</code></td>
-        </tr>
-        <tr>
-            <td>Nodes available</td>
-            <td>gpc1-32, bmc1-7</td>
-            <td>gpu1, gpu2, gpu3</td>
-        </tr>
-        </tbody>
-    </table>
-     
-</section>
+<div class="danger-box">
+    <h3>🚨 IMPORTANT</h3>
+    <ul>
+        <li><strong>Batch jobs (qsub script.sh) are broken</strong> - only interactive works!</li>
+        <li><strong>Use nohup</strong> - without it, closing terminal kills your job</li>
+        <li><strong>Set walltime</strong> - job will be killed when time expires</li>
+        <li><strong>Monitor with nvidia-smi</strong> - check GPU usage to verify job is running</li>
+    </ul>
+</div>
+
+
+  </section>
         
         <!-- Quick Reference -->
         <section id="commands">
