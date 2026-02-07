@@ -1873,17 +1873,6 @@ kill -9 123456
 <span class="comment"># Or kill all your Python processes</span>
 pkill -u $USER python</code></pre>
 
-<div class="danger-box">
-    <h3>🚨 IMPORTANT</h3>
-    <ul>
-        <li><strong>Batch jobs (qsub script.sh) are broken</strong> - only interactive works!</li>
-        <li><strong>Use nohup</strong> - without it, closing terminal kills your job</li>
-        <li><strong>Set walltime</strong> - job will be killed when time expires</li>
-        <li><strong>Monitor with nvidia-smi</strong> - check GPU usage to verify job is running</li>
-    </ul>
-</div>
-
-
   </section>
         
         <!-- Quick Reference -->
