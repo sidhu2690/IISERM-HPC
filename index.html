@@ -1780,11 +1780,18 @@ pbsnodes gpc25
 
 <h3>Working Solution: Interactive + nohup</h3>
 <p>
-    Since batch submission is broken, you must use <strong>interactive sessions</strong> combined 
-    with <strong>nohup</strong> to run long GPU jobs. This allows your job to continue running even 
-    after you disconnect from the terminal.
+    Since batch submission is currently broken, you must use <strong>interactive sessions</strong> 
+    combined with <strong>nohup</strong> to run long GPU jobs. This setup allows your job to keep 
+    running while you continue doing other work on the HPC (for example, opening a new SSH session 
+    and running additional commands).
 </p>
-
+<p>
+    You can start an interactive session, launch your job using <code>nohup</code>, and then use 
+    another SSH session for other tasks. However, keep one important limitation in mind: 
+    <strong> If you close the interactive session, the job will stop</strong>. There is currently 
+    no way to run the job in a fully detached manner. Once the interactive session ends, the job 
+    terminates as well.
+</p>
 <h4>Step 1: Request Interactive GPU Session</h4>
 <pre><code><span class="comment"># Request 8 hours on gpu3 with 16 CPU cores</span>
 qsub -I -q gpulong -l select=1:ncpus=16:host=gpu3,walltime=8:00:00
