@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HPC Docs | IISER Mohali</title>
+  <title>IISER Mohali Unofficial HPC Guide</title>
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -19,8 +19,8 @@
 <header class="header">
   <div class="header-container">
     <div class="logo-area">
-      <i class="fa-solid fa-microchip" style="font-size:1.5rem;color:var(--accent)"></i>
-      <div class="site-title">HPC <span>Guide</span></div>
+      <img src="assets/logo.png" alt="IISER Mohali Logo" style="height:40px"/>
+      <div class="site-title">IISER Mohali <span>Unofficial HPC Guide</span></div>
     </div>
     
     <!-- Desktop Nav -->
@@ -37,8 +37,11 @@
         </div>
       </div>
       
-      <a href="#reference" class="nav-item">Quick Reference</a>
+      <a href="#resources" class="nav-item">Resources</a>
       <a href="#support" class="nav-item">Support</a>
+      <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank" class="nav-item" title="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
     </nav>
     
     <!-- Mobile Toggle -->
@@ -51,7 +54,7 @@
 <!-- ===== Mobile Offcanvas Menu ===== -->
 <aside class="offcanvas" id="offcanvasMenu">
   <div class="offcanvas-header">
-    <div class="site-title">HPC <span>Guide</span></div>
+    <div class="site-title">IISER Mohali <span>Unofficial HPC Guide</span></div>
     <button class="offcanvas-close" id="offcanvasClose">
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -67,8 +70,9 @@
       <a href="gpu.html">GPU & Nohup</a>
     </div>
     
-    <a href="#reference">Quick Reference</a>
+    <a href="#resources">Resources</a>
     <a href="#support">Support</a>
+    <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repo</a>
     <a href="https://www.iisermohali.ac.in" target="_blank">IISER Mohali</a>
   </nav>
 </aside>
@@ -83,18 +87,33 @@
 <!-- ===== Main Content ===== -->
 <div class="content-container">
 
-  <!-- Quick Start Banner -->
-  <div class="quickstart-banner">
-    <div>
-      <h3><i class="fa-solid fa-rocket"></i> Quick Start</h3>
-      <div class="qs-step">1. SSH: <code>ssh user@hpc.iisermohali.ac.in</code></div>
-      <div class="qs-step">2. Load module: <code>module load python/3.11</code></div>
-      <div class="qs-step">3. Submit: <code>qsub job.pbs</code></div>
+  <!-- External Resources Section -->
+  <section class="section-card" id="resources">
+    <h2><i class="fa-solid fa-link"></i> Useful Resources</h2>
+    <div class="support-grid">
+      <div class="support-item">
+        <i class="fa-solid fa-book"></i>
+        <div>
+          <strong>Official HPC Documentation</strong><br>
+          <a href="http://172.16.2.200/h/index.html" target="_blank">http://172.16.2.200/h/index.html</a>
+        </div>
+      </div>
+      <div class="support-item">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <div>
+          <strong>HPC School</strong><br>
+          <a href="https://dsjena.github.io/HPCSchool/" target="_blank">https://dsjena.github.io/HPCSchool/</a>
+        </div>
+      </div>
+      <div class="support-item">
+        <i class="fa-brands fa-github"></i>
+        <div>
+          <strong>Unofficial Guide (GitHub)</strong><br>
+          <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank">github.com/sidhu2690/IISERM-HPC</a>
+        </div>
+      </div>
     </div>
-    <div class="callout info" style="margin:0; border-radius:8px; border-left:none; background:rgba(255,255,255,0.1)">
-      <i class="fa-solid fa-lightbulb"></i> Run <code>module avail</code> to see installed software
-    </div>
-  </div>
+  </section>
 
   <!-- Topic Cards -->
   <div class="card-grid">
@@ -123,51 +142,39 @@
   <!-- Divider -->
   <div class="divider"></div>
 
-  <!-- Quick Reference Table -->
-  <section class="section-card" id="reference">
-    <h2><i class="fa-solid fa-keyboard"></i> Quick Reference</h2>
-    <table class="data-table">
-      <tbody>
-        <tr><th><code>qstat</code></th><td>View your jobs in queue</td></tr>
-        <tr><th><code>qsub script.pbs</code></th><td>Submit a batch job</td></tr>
-        <tr><th><code>qdel &lt;jobid&gt;</code></th><td>Cancel a running job</td></tr>
-        <tr><th><code>module load &lt;name&gt;</code></th><td>Load software environment</td></tr>
-        <tr><th><code>nvidia-smi</code></th><td>Monitor GPU status</td></tr>
-        <tr><th><code>du -sh ~/</code></th><td>Check your disk usage</td></tr>
-        <tr><th><code>scontrol show nodes</code></th><td>View node availability</td></tr>
-      </tbody>
-    </table>
-    <div class="callout warn">
-      <i class="fa-solid fa-triangle-exclamation"></i> 
-      <strong>Important:</strong> Never run compute-heavy tasks on login nodes. Always use <code>qsub</code>.
-    </div>
-  </section>
-
   <!-- Support Section -->
   <section class="section-card" id="support">
-    <h2><i class="fa-solid fa-headset"></i> Need Help?</h2>
+    <h2><i class="fa-solid fa-headset"></i> Contact & Support</h2>
+    <p style="margin-bottom:1rem; color:var(--text-muted); font-size:0.95rem">
+      If you would like to contact for technicalities, please write to:
+    </p>
     <div class="support-grid">
       <div class="support-item">
-        <i class="fa-solid fa-envelope"></i>
+        <i class="fa-solid fa-wrench"></i>
         <div>
-          <strong>Email</strong><br>
-          <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a>
+          <strong>Technical Issues</strong><br>
+          <a href="mailto:helpdesk-hpc@iisermohali.ac.in">helpdesk-hpc@iisermohali.ac.in</a>
         </div>
       </div>
       <div class="support-item">
-        <i class="fa-solid fa-clock"></i>
+        <i class="fa-solid fa-users"></i>
         <div>
-          <strong>Office Hours</strong><br>
-          Mon–Fri, 10:00–16:00 IST
+          <strong>HPC Mailing List</strong><br>
+          <a href="mailto:hpc-community@iisermohali.ac.in">hpc-community@iisermohali.ac.in</a><br>
+          <small style="color:var(--text-muted); font-size:0.85rem">(You are automatically added to this list)</small>
         </div>
       </div>
       <div class="support-item">
-        <i class="fa-solid fa-book-open"></i>
+        <i class="fa-solid fa-user-tie"></i>
         <div>
-          <strong>Wiki</strong><br>
-          <a href="#">Internal Knowledge Base</a>
+          <strong>Convenor</strong><br>
+          <a href="mailto:hpc@iisermohali.ac.in">hpc@iisermohali.ac.in</a>
         </div>
       </div>
+    </div>
+    <div class="callout info" style="margin-top:1rem">
+      <i class="fa-solid fa-circle-info"></i> 
+      You may also check the official documentation or reach out via the mailing list for community support.
     </div>
   </section>
 
@@ -188,24 +195,26 @@
     <div class="footer-card">
       <h3>Resources</h3>
       <ul>
-        <li><a href="#reference">Command Reference</a></li>
+        <li><a href="http://172.16.2.200/h/index.html" target="_blank">Official HPC Docs</a></li>
+        <li><a href="https://dsjena.github.io/HPCSchool/" target="_blank">HPC School</a></li>
+        <li><a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repo</a></li>
         <li><a href="#support">Get Support</a></li>
-        <li><a href="#">FAQ</a></li>
-        <li><a href="#">Changelog</a></li>
       </ul>
     </div>
     <div class="footer-card">
       <h3>Contact</h3>
       <p>
-        <i class="fa-solid fa-phone"></i> +91-172-XXXXXXX<br>
-        <i class="fa-solid fa-envelope"></i> <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a>
+        <i class="fa-solid fa-envelope"></i> 
+        <a href="mailto:helpdesk-hpc@iisermohali.ac.in">helpdesk-hpc@iisermohali.ac.in</a><br>
+        <a href="mailto:hpc@iisermohali.ac.in">hpc@iisermohali.ac.in</a>
       </p>
       <p style="margin-top:1rem; font-size:0.85rem; color:#64748b">
-        © 2026 IISER Mohali HPC Team
+        © 2026 IISER Mohali HPC Community
       </p>
     </div>
   </div>
   <div class="footer-bottom">
+    <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> Contribute on GitHub</a> • 
     <a href="#">Report an Issue</a> • <a href="#">Privacy Policy</a>
   </div>
 </footer>
