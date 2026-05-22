@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GPU & Sessions | IISER Mohali HPC</title>
+  <title>GPU & Sessions | IISER Mohali Unofficial HPC Guide</title>
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -114,6 +114,18 @@
       margin: 1rem 0;
     }
     .serious-warning strong { color: #991b1b; }
+    
+    /* Login node alert */
+    .login-alert {
+      background: linear-gradient(135deg, #fff7ed, #ffedd5);
+      border-left: 4px solid #f97316;
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      color: #7c2d12;
+    }
+    .login-alert strong { color: #c2410c; }
   </style>
 </head>
 <body>
@@ -122,15 +134,15 @@
 <header class="header">
   <div class="header-container">
     <div class="logo-area">
-      <i class="fa-solid fa-microchip" style="font-size:1.5rem;color:var(--accent)"></i>
-      <div class="site-title">HPC <span>Guide</span></div>
+      <img src="assets/logo.png" alt="IISER Mohali Logo" style="height:40px"/>
+      <div class="site-title">IISER Mohali <span>Unofficial HPC Guide</span></div>
     </div>
     
     <!-- Desktop Nav -->
     <nav class="main-nav">
       <a href="index.html" class="nav-item">Home</a>
       
-      <div class="nav-item parent">
+      <div class="nav-item parent active">
         HPC Details
         <div class="dropdown">
           <a href="architecture.html">Architecture</a>
@@ -140,8 +152,11 @@
         </div>
       </div>
       
-      <a href="index.html#reference" class="nav-item">Quick Reference</a>
+      <a href="index.html#resources" class="nav-item">Resources</a>
       <a href="index.html#support" class="nav-item">Support</a>
+      <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank" class="nav-item" title="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
     </nav>
     
     <!-- Mobile Toggle -->
@@ -154,7 +169,7 @@
 <!-- ===== Mobile Offcanvas Menu ===== -->
 <aside class="offcanvas" id="offcanvasMenu">
   <div class="offcanvas-header">
-    <div class="site-title">HPC <span>Guide</span></div>
+    <div class="site-title">IISER Mohali <span>Unofficial HPC Guide</span></div>
     <button class="offcanvas-close" id="offcanvasClose">
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -170,8 +185,9 @@
       <a href="gpu.html" class="active">GPU & Sessions</a>
     </div>
     
-    <a href="index.html#reference">Quick Reference</a>
+    <a href="index.html#resources">Resources</a>
     <a href="index.html#support">Support</a>
+    <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repo</a>
     <a href="https://www.iisermohali.ac.in" target="_blank">IISER Mohali</a>
   </nav>
 </aside>
@@ -197,48 +213,65 @@
   <!-- ══ GPU ACCESS ══ -->
   <section class="gpu-section active" id="access">
     
-    <div class="section-card">
-      <h2><i class="fa-solid fa-circle-info"></i> Current Status (May 2026)</h2>
-      <p>As of May 2026, the PBS scheduler for GPU nodes is experiencing intermittent issues. To ensure research continuity, we provide a temporary interactive access method. <strong>This is a workaround, not the standard workflow.</strong></p>
-      
-      <div class="callout warn">
-        <strong>Important:</strong> This method is for interactive development and testing only. For production runs, please use the standard PBS batch submission once the scheduler is fully restored.
+    <div class="login-alert">
+      <strong><i class="fa-solid fa-triangle-exclamation"></i> Critical: GPU Access Only Works from login1</strong><br>
+      When you SSH into the cluster, you may land on <code>login1</code> or <code>login2</code>. <strong>GPU node access only works from login1.</strong> If you're on login2 and try to request a GPU node, the command will hang or fail.
+      <div style="margin-top:0.5rem">
+        <strong>Check which login node you're on:</strong> <code>hostname</code><br>
+        <strong>If you see login2:</strong> <code>exit</code> and SSH again until you land on login1.
       </div>
     </div>
 
     <div class="section-card">
-      <h2><i class="fa-solid fa-key"></i> How to Access GPU Nodes (Temporary Method)</h2>
+      <h2><i class="fa-solid fa-key"></i> How to Access GPU Nodes</h2>
       <p>Use an <strong>interactive PBS session</strong> to get a shell on a GPU node. This works <strong>only from login1</strong>.</p>
       
-      <pre><code><span class="comment"># From login1 only — this will NOT work from login2</span>
-<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub -I -q gpushort</span>
-<span class="comment"># or for longer sessions:</span>
+      <pre><code><span class="comment"># From login1 only — will NOT work from login2</span>
 <span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub -I -q gpulong</span></code></pre>
       
       <table class="data-table">
         <tbody>
-          <tr><th>Queue</th><th>Max Walltime</th><th>Use For</th></tr>
-          <tr><td><code>gpushort</code></td><td>4 hours</td><td>Quick tests, debugging, short runs</td></tr>
-          <tr><td><code>gpulong</code></td><td>48 hours</td><td>Longer training jobs, production runs</td></tr>
+          <tr><th>Queue</th><th>GPU Nodes</th><th>Current Status</th><th>Use For</th></tr>
+          <tr><td><code>gpushort</code></td><td>gpu1</td><td>⚠️ Currently down (may be revived)</td><td>Training jobs, production runs</td></tr>
+          <tr><td><code>gpulong</code></td><td>gpu2, gpu3</td><td>✅ Active</td><td>Training jobs, production runs</td></tr>
         </tbody>
       </table>
       
       <div class="callout info">
-        <strong>What happens:</strong> After running the command, you'll be dropped directly into a shell on a GPU node (e.g., <code>gpu1</code>, <code>gpu2</code>, or <code>gpu3</code>). Your prompt will change to something like <code>[user@gpu2 ~]$</code>.
+        <strong>What happens:</strong> After running the command, you'll be dropped directly into a shell on a GPU node (e.g., <code>gpu2</code> or <code>gpu3</code>). Your prompt will change to something like <code>[user@gpu2 ~]$</code>.
       </div>
     </div>
 
     <div class="section-card">
-      <h2><i class="fa-solid fa-triangle-exclamation"></i> The Problem: Terminal Closes = Job Ends</h2>
-      <p>If you run your code directly in this interactive session and then close your terminal (or lose connection), <strong>your job stops immediately</strong>. Any progress is lost.</p>
+      <h2><i class="fa-solid fa-bullseye"></i> Target a Specific GPU Node</h2>
+      <p>If you want to request a specific GPU node (e.g., gpu2 or gpu3), add the <code>-l host=</code> flag:</p>
       
-      <pre><code><span class="comment"># ❌ BAD: Run directly, then disconnect</span>
-<span class="t-prompt">[user@gpu2 ~]$</span> <span class="t-cmd">python train.py</span>
-<span class="comment"># ... training starts ...</span>
-<span class="comment"># You close terminal or SSH drops</span>
-<span class="comment"># → Job killed, all progress lost 😢</span></code></pre>
+      <pre><code><span class="comment"># Request gpu2 specifically</span>
+<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub -I -q gpulong -l host=gpu2</span>
+
+<span class="comment"># Request gpu3 specifically</span>
+<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub -I -q gpulong -l host=gpu3</span></code></pre>
       
-      <p><strong>Solution:</strong> Use <code>tmux</code> to create a persistent session that survives disconnections.</p>
+      <div class="callout tip">
+        💡 Use this when you know a particular node is free (check with <code>nvidia-smi</code> first) or if you need to resume work on the same node.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-lightbulb"></i> Small Jobs vs Long Jobs</h2>
+      <table class="data-table">
+        <tbody>
+          <tr><th>Job Type</th><th>Recommended Approach</th></tr>
+          <tr>
+            <td><strong>Small/quick jobs</strong><br><small>(< 30 min, testing, debugging)</small></td>
+            <td>Just run directly in the interactive shell. Keep your terminal open. If it disconnects, you can restart quickly.</td>
+          </tr>
+          <tr>
+            <td><strong>Long jobs</strong><br><small>(training, production runs)</small></td>
+            <td><strong>Always use tmux</strong> so your job survives SSH disconnects, terminal closes, or network drops.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
   </section>
@@ -250,8 +283,8 @@
       <h2><i class="fa-solid fa-terminal"></i> What is tmux?</h2>
       <p><code>tmux</code> is a terminal multiplexer. It lets you create sessions that keep running even after you disconnect. You can reattach later to check progress or interact with your job.</p>
       
-      <div class="callout tip">
-        <strong>Not installed?</strong> If <code>tmux</code> is not available on your account, you can install it locally in your home directory. Search online for "install tmux without root" or ask the HPC support team for help.
+      <div class="callout warn">
+        <strong>tmux may not be pre-installed:</strong> If <code>tmux</code> is not available on your account, you'll need to install it yourself in your home directory. Search online for "install tmux without root" or ask ChatGPT for step-by-step help.
       </div>
     </div>
 
@@ -412,9 +445,9 @@ Fri May 22 19:59:37 2026
         <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
         <strong>Serious Warning: Use Responsibly</strong>
       </h3>
-      <p>This interactive GPU access method bypasses normal scheduler controls. <strong>With great power comes great responsibility.</strong></p>
+      <p>GPU nodes are a shared, limited resource. This interactive access method gives you direct control — use it thoughtfully.</p>
       <ul style="margin:0.5rem 0 0; padding-left:1.25rem;">
-        <li><strong>Never kill another user's job.</strong> Use <code>nvidia-smi</code> to check before starting work.</li>
+        <li><strong>Never kill another user's job.</strong> Use <code>nvidia-smi</code> and <code>ps aux</code> to check before starting work.</li>
         <li><strong>Do not monopolize GPUs.</strong> If you're done, exit cleanly so others can use the resource.</li>
         <li><strong>Do not run destructive commands.</strong> You have elevated access — misuse can affect everyone.</li>
         <li><strong>Report issues, don't exploit them.</strong> If you find a problem, tell the admin, don't take advantage.</li>
@@ -425,11 +458,12 @@ Fri May 22 19:59:37 2026
       <h2><i class="fa-solid fa-hand"></i> Good Practices Checklist</h2>
       <ul>
         <li>✅ Always run <code>nvidia-smi</code> before starting a job</li>
-        <li>✅ Use <code>tmux</code> so your job survives disconnections</li>
+        <li>✅ Use <code>tmux</code> for long jobs so they survive disconnections</li>
         <li>✅ Name your tmux sessions clearly (e.g., <code>myproject_train</code>)</li>
         <li>✅ Clean up: <code>tmux kill-session</code> when your job is done</li>
         <li>✅ Exit GPU node cleanly: type <code>exit</code> when finished</li>
         <li>✅ Be considerate: GPU time is shared — don't block others unnecessarily</li>
+        <li>✅ If gpushort (gpu1) comes back online, use it for quick tests to free up gpulong nodes</li>
       </ul>
     </div>
 
@@ -438,7 +472,7 @@ Fri May 22 19:59:37 2026
       <ol style="padding-left:1.25rem; margin:0.5rem 0;">
         <li><strong>Stop immediately.</strong> Don't try to hide it or restart it yourself.</li>
         <li><strong>Notify the user</strong> if you know who was running the job.</li>
-        <li><strong>Inform HPC support</strong> at <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a> with details.</li>
+        <li><strong>Inform HPC support</strong> at <a href="mailto:helpdesk-hpc@iisermohali.ac.in">helpdesk-hpc@iisermohali.ac.in</a> with details.</li>
         <li><strong>Learn from it.</strong> Double-check <code>nvidia-smi</code> and process lists next time.</li>
       </ol>
       <div class="callout warn">
@@ -447,11 +481,14 @@ Fri May 22 19:59:37 2026
     </div>
 
     <div class="section-card">
-      <h2><i class="fa-solid fa-flag"></i> When the Scheduler Is Fixed</h2>
-      <p>Once the PBS scheduler for GPU nodes is fully restored, we will return to the standard batch submission workflow:</p>
-      <pre><code><span class="comment"># Future standard method (not yet available):</span>
-<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub gpu_job.pbs</span></code></pre>
-      <p>We will announce the transition via email and update this documentation. Until then, please use the interactive method responsibly.</p>
+      <h2><i class="fa-solid fa-info-circle"></i> About GPU Queue Walltime</h2>
+      <p>Despite the queue names <code>gpushort</code> and <code>gpulong</code>, <strong>GPU nodes do not enforce walltime limits</strong> in the current configuration. Your interactive session will continue until:</p>
+      <ul style="padding-left:1.25rem; margin:0.5rem 0;">
+        <li>You manually exit the node</li>
+        <li>The node is rebooted by admin</li>
+        <li>Your tmux session is killed</li>
+      </ul>
+      <p>This is why using <code>tmux</code> is critical — your job won't be auto-killed by a timer, but it <em>will</em> stop if your SSH connection drops without tmux.</p>
     </div>
 
   </section>
@@ -471,26 +508,28 @@ Fri May 22 19:59:37 2026
       </ul>
     </div>
     <div class="footer-card">
-      <h3>Related Pages</h3>
+      <h3>Resources</h3>
       <ul>
-        <li><a href="pbs.html">PBS Jobs Guide</a></li>
-        <li><a href="linux.html">Linux Basics</a></li>
-        <li><a href="architecture.html">Cluster Architecture</a></li>
+        <li><a href="http://172.16.2.200/h/index.html" target="_blank">Official HPC Docs</a></li>
+        <li><a href="https://dsjena.github.io/HPCSchool/" target="_blank">HPC School</a></li>
+        <li><a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repo</a></li>
         <li><a href="index.html#support">Get Support</a></li>
       </ul>
     </div>
     <div class="footer-card">
       <h3>Contact</h3>
       <p>
-        <i class="fa-solid fa-envelope"></i> <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a><br>
-        <i class="fa-solid fa-clock"></i> Mon–Fri, 10:00–16:00 IST
+        <i class="fa-solid fa-envelope"></i> 
+        <a href="mailto:helpdesk-hpc@iisermohali.ac.in">helpdesk-hpc@iisermohali.ac.in</a><br>
+        <a href="mailto:hpc@iisermohali.ac.in">hpc@iisermohali.ac.in</a>
       </p>
       <p style="margin-top:1rem; font-size:0.85rem; color:#64748b">
-        © 2026 IISER Mohali HPC Team
+        © 2026 IISER Mohali HPC Community
       </p>
     </div>
   </div>
   <div class="footer-bottom">
+    <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> Contribute on GitHub</a> • 
     <a href="#">Report an Issue</a> • <a href="#">Privacy Policy</a>
   </div>
 </footer>
