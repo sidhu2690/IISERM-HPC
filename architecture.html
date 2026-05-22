@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Architecture | IISER Mohali HPC</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
+  <!-- Main Styles -->
+  <link rel="stylesheet" href="style.css"/>
+  
+  <!-- Page-Specific Styles (Cluster Diagram) -->
+  <style>
+    .cluster-diagram {
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .diagram-title {
+      text-align: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #1e293b;
+      letter-spacing: 1.5px;
+      margin-bottom: 1.25rem;
+    }
+    .diagram-section { margin-bottom: 0.5rem; }
+    .section-label {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+    .node-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .node-box {
+      background: white;
+      border: 2px solid #cbd5e0;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      min-width: 110px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    .login-node   { border-color: #3b82f6; background: linear-gradient(135deg, #eff6ff, #dbeafe); }
+    .master-node  { border-color: #8b5cf6; background: linear-gradient(135deg, #f5f3ff, #ede9fe); }
+    .compute-node { border-color: #22c55e; background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
+    .gpu-node     { border-color: #f59e0b; background: linear-gradient(135deg, #fffbeb, #fef3c7); }
+    .node-title { font-weight: 700; color: #1e293b; font-size: 0.85rem; margin-bottom: 0.25rem; }
+    .node-desc  { font-size: 0.72rem; color: #64748b; }
+    .node-cores { font-size: 0.72rem; color: #1e293b; font-weight: 600; }
+    .network-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem 0;
+      gap: 0.5rem;
+    }
+    .connector-line {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, transparent, #94a3b8, transparent);
+      max-width: 140px;
+    }
+    .network-label {
+      background: #1e293b;
+      color: white;
+      padding: 0.35rem 0.85rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin: 0.75rem 0;
+    }
+    .summary-stat {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.85rem;
+      text-align: center;
+    }
+    .summary-stat .stat-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      display: block;
+    }
+    .summary-stat .stat-label {
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 0.2rem;
+    }
+    /* Terminal block */
+    .terminal {
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 0.75rem 0;
+      font-size: 0.78rem;
+    }
+    .terminal-bar {
+      background: #1e293b;
+      padding: 0.4rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .terminal-bar span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .t-red    { background: #ef4444; }
+    .t-yellow { background: #eab308; }
+    .t-green  { background: #22c55e; }
+    .t-title  { color: #64748b; font-size: 0.72rem; margin-left: 0.4rem; }
+    .terminal-body {
+      padding: 0.85rem 1rem;
+      color: #94a3b8;
+      font-family: 'Fira Code', monospace;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .t-cmd     { color: #38bdf8; }
+    .t-hi      { color: #f87171; font-weight: 600; }
+    .t-warn    { color: #fbbf24; }
+    .t-ok      { color: #86efac; }
+    .t-dim     { color: #475569; }
+    
+    /* Sub-nav tabs for architecture sections */
+    .arch-subnav {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0 1.5rem;
+      flex-wrap: wrap;
+    }
+    .arch-tab {
+      padding: 0.5rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .arch-tab:hover, .arch-tab.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .arch-section { display: none; }
+    .arch-section.active { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="header">
+  <div class="header-container">
+    <div class="logo-area">
+      <i class="fa-solid fa-microchip" style="font-size:1.5rem;color:var(--accent)"></i>
+      <div class="site-title">HPC <span>Guide</span></div>
+    </div>
+    
+    <!-- Desktop Nav -->
+    <nav class="main-nav">
+      <a href="index.html" class="nav-item">Home</a>
+      
+      <div class="nav-item parent active">
+        HPC Details
+        <div class="dropdown">
+          <a href="architecture.html" class="active">Architecture</a>
+          <a href="linux.html">Linux Basics</a>
+          <a href="pbs.html">PBS Jobs</a>
+          <a href="gpu.html">GPU & Nohup</a>
+        </div>
+      </div>
+      
+      <a href="index.html#reference" class="nav-item">Quick Reference</a>
+      <a href="index.html#support" class="nav-item">Support</a>
+    </nav>
+    
+    <!-- Mobile Toggle -->
+    <button class="menu-toggle" id="menuToggle">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ===== Mobile Offcanvas Menu ===== -->
+<aside class="offcanvas" id="offcanvasMenu">
+  <div class="offcanvas-header">
+    <div class="site-title">HPC <span>Guide</span></div>
+    <button class="offcanvas-close" id="offcanvasClose">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <nav class="offcanvas-nav">
+    <a href="index.html">Home</a>
+    
+    <a href="#" class="offcanvas-parent active">HPC Details <i class="fa-solid fa-chevron-down" style="float:right;font-size:0.8rem"></i></a>
+    <div class="offcanvas-sub" style="display:block">
+      <a href="architecture.html" class="active">Architecture</a>
+      <a href="linux.html">Linux Basics</a>
+      <a href="pbs.html">PBS Jobs</a>
+      <a href="gpu.html">GPU & Nohup</a>
+    </div>
+    
+    <a href="index.html#reference">Quick Reference</a>
+    <a href="index.html#support">Support</a>
+    <a href="https://www.iisermohali.ac.in" target="_blank">IISER Mohali</a>
+  </nav>
+</aside>
+
+<!-- ===== Page Header Bar ===== -->
+<div class="page-header-bar">
+  <div class="page-header-container">
+    <h1><i class="fa-solid fa-sitemap"></i> Architecture</h1>
+  </div>
+</div>
+
+<!-- ===== Main Content ===== -->
+<div class="content-container">
+
+  <!-- Sub-navigation Tabs -->
+  <div class="arch-subnav">
+    <button class="arch-tab active" onclick="showArchSection('overview', this)">Overview</button>
+    <button class="arch-tab" onclick="showArchSection('login', this)">Login Node</button>
+    <button class="arch-tab" onclick="showArchSection('compute', this)">Compute Nodes</button>
+  </div>
+
+  <!-- ══ OVERVIEW ══ -->
+  <section class="arch-section active" id="overview">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-info"></i> What is the HPC?</h2>
+      <p>HPC stands for High Performance Computing. It is a cluster of powerful computers connected over a fast network. Researchers use it to run jobs that are too big or too slow to run on a personal laptop.</p>
+      <p>You connect to the cluster over SSH, write a PBS script that describes your job (how many cores, how much memory, how long it will run), and submit it. The PBS scheduler then places your job on a suitable compute node and runs it.</p>
+      <div class="callout info">
+        <strong>Key Points</strong><br>
+        The cluster uses <strong>PBS</strong> (Portable Batch System) as the job scheduler. Jobs run on <strong>compute nodes</strong>. The <strong>login node</strong> is only for light tasks like editing files and submitting jobs. Resources are shared among all users, so please use them responsibly.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-diagram-project"></i> Cluster Architecture</h2>
+
+      <div class="cluster-diagram">
+        <div class="diagram-title">HPC CLUSTER ARCHITECTURE</div>
+
+        <div class="diagram-section">
+          <div class="section-label">Access Layer</div>
+          <div class="node-group">
+            <div class="node-box login-node">
+              <div class="node-title">Login Node 1</div>
+              <div class="node-desc">Submit jobs</div>
+            </div>
+            <div class="node-box login-node">
+              <div class="node-title">Login Node 2</div>
+              <div class="node-desc">Edit files</div>
+            </div>
+            <div class="node-box master-node">
+              <div class="node-title">Master Node</div>
+              <div class="node-desc">Job scheduler</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="network-connector">
+          <div class="connector-line"></div>
+          <div class="network-label">High-Speed Network</div>
+          <div class="connector-line"></div>
+        </div>
+
+        <div class="diagram-section">
+          <div class="section-label">Compute Layer — CPU Nodes</div>
+          <div class="node-group">
+            <div class="node-box compute-node">
+              <div class="node-title">gpc1</div>
+              <div class="node-cores">52 cores</div>
+            </div>
+            <div class="node-box compute-node">
+              <div class="node-title">gpc2</div>
+              <div class="node-cores">52 cores</div>
+            </div>
+            <div class="node-box compute-node">
+              <div class="node-title">. . .</div>
+              <div class="node-desc">gpc3 to gpc31</div>
+            </div>
+            <div class="node-box compute-node">
+              <div class="node-title">gpc32</div>
+              <div class="node-cores">52 cores</div>
+            </div>
+            <div class="node-box compute-node">
+              <div class="node-title">bmc1–7</div>
+              <div class="node-cores">52 cores</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="network-connector" style="margin:0.6rem 0;">
+          <div class="connector-line"></div>
+          <div class="connector-line"></div>
+        </div>
+
+        <div class="diagram-section">
+          <div class="section-label">Compute Layer — GPU Nodes</div>
+          <div class="node-group">
+            <div class="node-box gpu-node">
+              <div class="node-title">gpu1</div>
+              <div class="node-cores">4x Tesla T4</div>
+              <div class="node-desc">16 GB each</div>
+            </div>
+            <div class="node-box gpu-node">
+              <div class="node-title">gpu2</div>
+              <div class="node-cores">4x Tesla T4</div>
+              <div class="node-desc">16 GB each</div>
+            </div>
+            <div class="node-box gpu-node">
+              <div class="node-title">gpu3</div>
+              <div class="node-cores">4x Tesla T4</div>
+              <div class="node-desc">16 GB each</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-chart-bar"></i> Cluster Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-stat">
+          <span class="stat-value">~39</span>
+          <div class="stat-label">Total Compute Nodes</div>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-value">52</span>
+          <div class="stat-label">Cores per CPU Node</div>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-value">~1872</span>
+          <div class="stat-label">Total CPU Cores</div>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-value">384 GB</span>
+          <div class="stat-label">RAM per CPU Node</div>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-value">4x T4</span>
+          <div class="stat-label">GPUs per GPU Node</div>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-value">16 GB</span>
+          <div class="stat-label">VRAM per GPU</div>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <tbody>
+          <tr><th>Node Type</th><td><strong>Names</strong></td><td><strong>Purpose</strong></td></tr>
+          <tr>
+            <td>Login Nodes</td>
+            <td><code>login1</code>, <code>login2</code></td>
+            <td>SSH in, edit files, submit jobs</td>
+          </tr>
+          <tr>
+            <td>CPU Compute</td>
+            <td><code>gpc1–gpc32</code>, <code>bmc1–bmc7</code></td>
+            <td>CPU batch jobs</td>
+          </tr>
+          <tr>
+            <td>GPU Compute</td>
+            <td><code>gpu1–gpu3</code></td>
+            <td>GPU accelerated workloads</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-microchip"></i> What is a Node and a Core?</h2>
+      <p>A <strong>node</strong> is one computer inside the cluster. A <strong>core</strong> is a single processing unit inside that computer. Each node has many cores that can work at the same time.</p>
+      <div class="callout info">
+        <strong>Example:</strong> A node has 52 cores. If you request <code>ppn=4</code> in your PBS script, your job uses 4 of those cores. The other 48 cores remain free for other users jobs running on the same node.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ LOGIN NODE ══ -->
+  <section class="arch-section" id="login">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-info"></i> What is the Login Node?</h2>
+      <p>When you SSH into the cluster, you land on the login node. It is a regular computer shared by everyone who is logged in at that moment. It is strictly meant for light tasks only.</p>
+      <p>The login node is not meant for running actual computations. For that, you use the PBS scheduler to submit your job to a compute node. You will learn more about this in the PBS section.</p>
+
+      <table class="data-table">
+        <tbody>
+          <tr><th>✅ Allowed on Login Node</th><th>❌ Not Allowed on Login Node</th></tr>
+          <tr><td>Editing scripts with <code>nano</code> or <code>vim</code></td><td>Running Python training scripts</td></tr>
+          <tr><td>Submitting jobs with <code>qsub</code></td><td>Running simulations directly</td></tr>
+          <tr><td>Checking jobs with <code>qstat</code></td><td>Compiling large codebases</td></tr>
+          <tr><td>Creating folders and small files</td><td>Processing large datasets</td></tr>
+          <tr><td>Transferring files with <code>scp</code></td><td>Running any heavy program</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <strong>Important:</strong> The login node is shared by all users. If someone runs a heavy job on it, the whole system slows down for everyone. In bad cases it can cause the login node to crash and no one will be able to connect to the cluster until the admin fixes it. Always use the scheduler for any real computation.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-terminal"></i> Checking Login Node Load with <code>top</code></h2>
+      <p>You can run <code>top</code> on the login node to see the current CPU and memory usage. If the load is very high, it means someone is running something heavy on the login node and you should inform the admin.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="t-red"></span>
+          <span class="t-yellow"></span>
+          <span class="t-green"></span>
+          <span class="t-title">login1 — top</span>
+        </div>
+        <div class="terminal-body"><span class="t-cmd">(base) [rk21045@login1 ~]$ top</span>
+<span class="t-warn">top - 01:29:18 up 4 days,  7:26,  9 users,  load average: 168.21, 171.62, 171.92</span>
+Tasks: 591 total,   5 running, 581 sleeping,   5 stopped,   0 zombie
+<span class="t-hi">%Cpu(s): 99.7 us,  0.3 sy,  0.0 ni,  0.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span>
+KiB Mem : 39487868+total, <span class="t-hi">10684056 free</span>, 55634912 used, 32855971+buff/cache
+KiB Swap: 67108860 total, 67108860 free,        0 used. 33805238+avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S  <span class="t-warn">%CPU</span>  %MEM     TIME+  COMMAND
+ 61813 <span class="t-hi">ab19032</span>   20   0  105.7g  16.5g   6112 R  <span class="t-hi">1693</span>   4.4  62936:45 l914.exe
+ 40196 <span class="t-hi">ph17086</span>   20   0  104.2g   1.4g   5704 R  <span class="t-hi">1209</span>   0.4  71422:49 l508.exe
+ 60007 <span class="t-hi">ph18011</span>   20   0  104.2g  11.8g   6104 R  <span class="t-hi">1167</span>   3.1  62691:54 l914.exe
+ 43326 <span class="t-hi">ms21099</span>   20   0  104.2g  11.5g   5976 R  <span class="t-hi">1135</span>   3.1  65828:04 l914.exe
+  2490 nobody    20   0  176864   1872   1256 S    0.3   0.0   1:52.56 gmond
+ 61885 <span class="t-ok">rk21045</span>   20   0  173236   2924   1700 R    0.3   0.0   0:00.08 top
+146608 ph25042   20   0  185300   2936   1052 S    0.3   0.0   0:10.02 sshd
+     1 root      20   0  191684   4764   2636 S    0.0   0.0   0:17.08 systemd
+<span class="t-dim">     2 root      20   0       0      0      0 S    0.0   0.0   0:00.51 kthreadd</span>
+<span class="t-dim">     4 root       0 -20       0      0      0 S    0.0   0.0   0:00.00 kworker</span></div>
+      </div>
+
+      <p>In the output above, the <strong>load average is 168</strong> and <strong>CPU usage is 99.7%</strong>. This is very high. You can also see that four users are running jobs directly on the login node with CPU usage above 1000% each. This is wrong and will slow down the entire system.</p>
+
+      <div class="callout warn">
+        <strong>What to look for in <code>top</code>:</strong><br><br>
+
+        <strong>%MEM (MOST IMPORTANT)</strong><br>
+        High memory usage is the biggest danger on the login node.<br>
+        If any process is using large memory (e.g. &gt;1–2% or multiple GBs), it can crash the node for everyone.<br><br>
+
+        <strong>Free memory</strong> (KiB Mem free)<br>
+        If this becomes very low, the system may start swapping or freeze.<br><br>
+
+        <strong>%CPU per process</strong><br>
+        Should be very low on login nodes. High values (100+) indicate misuse, but CPU overload mainly slows the system.<br><br>
+
+        <strong>Load average</strong><br>
+        Should be less than total cores. High load means heavy usage, but is less dangerous than memory exhaustion.<br><br>
+
+        <strong>Important:</strong><br>
+        CPU abuse makes the system slow.<br>
+        Memory abuse can crash the entire login node.<br><br>
+
+        If you see high memory usage, report it to the system admin immediately.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ COMPUTE NODES ══ -->
+  <section class="arch-section" id="compute">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-info"></i> What are Compute Nodes?</h2>
+      <p>Compute nodes are dedicated machines reserved for running jobs. Each node has its own CPUs, large RAM, and in the case of GPU nodes, graphics cards. You do not SSH into them directly. The PBS scheduler sends your job there automatically after you submit it from the login node.</p>
+      <p>You can choose which queue to submit your job to depending on how long your job will run and how many cores it needs. Each queue has different limits.</p>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-table-list"></i> Available Queues</h2>
+      <table class="data-table">
+        <tbody>
+          <tr><th>Queue</th><th>Max Walltime</th><th>Max Cores per User</th><th>Use For</th></tr>
+          <tr>
+            <td><code>default</code></td>
+            <td>8 hours</td>
+            <td>200 cores</td>
+            <td>Quick jobs, testing, short calculations</td>
+          </tr>
+          <tr>
+            <td><code>short</code></td>
+            <td>72 hours (3 days)</td>
+            <td>100 cores</td>
+            <td>Medium length production jobs</td>
+          </tr>
+          <tr>
+            <td><code>long</code></td>
+            <td>1080 hours (45 days)</td>
+            <td>100 cores</td>
+            <td>Long running simulations</td>
+          </tr>
+          <tr>
+            <td><code>infinity</code></td>
+            <td>4380 hours (about 6 months)</td>
+            <td>50 cores</td>
+            <td>Very long calculations, use sparingly</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip">
+        <strong>Tip:</strong> Start with the <code>default</code> queue when testing your script. Only move to <code>long</code> or <code>infinity</code> once you are sure the job runs correctly. Submitting a broken job to a long queue wastes your allocation and blocks resources for others.
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- ===== Footer ===== -->
+<footer class="footer-bar">
+  <div class="footer-container">
+    <div class="footer-card">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#login">Login Node</a></li>
+        <li><a href="#compute">Compute Nodes</a></li>
+        <li><a href="pbs.html">PBS Jobs Guide</a></li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>Related Pages</h3>
+      <ul>
+        <li><a href="linux.html">Linux Basics</a></li>
+        <li><a href="gpu.html">GPU & Nohup</a></li>
+        <li><a href="index.html#reference">Command Reference</a></li>
+        <li><a href="index.html#support">Get Support</a></li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>Contact</h3>
+      <p>
+        <i class="fa-solid fa-envelope"></i> <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a><br>
+        <i class="fa-solid fa-clock"></i> Mon–Fri, 10:00–16:00 IST
+      </p>
+      <p style="margin-top:1rem; font-size:0.85rem; color:#64748b">
+        © 2026 IISER Mohali HPC Team
+      </p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <a href="#">Report an Issue</a> • <a href="#">Privacy Policy</a>
+  </div>
+</footer>
+
+<!-- ===== Scripts ===== -->
+<script>
+  // Architecture section tabs
+  function showArchSection(id, btn) {
+    document.querySelectorAll('.arch-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.arch-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: document.querySelector('.content-container').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const offcanvas = document.getElementById('offcanvasMenu');
+  const offcanvasClose = document.getElementById('offcanvasClose');
+  
+  menuToggle?.addEventListener('click', (e) => { e.stopPropagation(); offcanvas.classList.add('open'); });
+  offcanvasClose?.addEventListener('click', () => offcanvas.classList.remove('open'));
+  
+  // Close offcanvas when clicking outside
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 900 && 
+        !offcanvas.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+      offcanvas.classList.remove('open');
+    }
+  });
+  
+  // Mobile dropdown toggle
+  document.querySelectorAll('.offcanvas-parent').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      item.classList.toggle('active');
+      const sub = item.nextElementSibling;
+      if (sub?.classList.contains('offcanvas-sub')) {
+        sub.style.display = sub.style.display === 'block' ? 'none' : 'block';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

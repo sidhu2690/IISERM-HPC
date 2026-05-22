@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GPU & Sessions | IISER Mohali HPC</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
+  <!-- Main Styles -->
+  <link rel="stylesheet" href="style.css"/>
+  
+  <!-- Page-Specific Styles (Terminal + Code Highlighting) -->
+  <style>
+    /* Terminal block */
+    .terminal {
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 0.75rem 0;
+      font-size: 0.78rem;
+    }
+    .terminal-bar {
+      background: #1e293b;
+      padding: 0.4rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .terminal-bar .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .t-red    { background: #ef4444; }
+    .t-yellow { background: #eab308; }
+    .t-green  { background: #22c55e; }
+    .terminal-body {
+      padding: 0.85rem 1rem;
+      color: #94a3b8;
+      font-family: 'Fira Code', monospace;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .t-prompt  { color: #22c55e; }
+    .t-cmd     { color: #38bdf8; font-weight: 600; }
+    .t-out     { color: #94a3b8; }
+    .t-comment { color: #475569; font-style: italic; }
+    .t-hi      { color: #fbbf24; }
+    .t-warn    { color: #f87171; }
+    .t-ok      { color: #86efac; }
+    .t-dim     { color: #334155; }
+    
+    /* Code syntax highlighting for PBS directives */
+    pre {
+      background: var(--code-bg, #0f172a);
+      color: #e2e8f0;
+      padding: 1rem 1.1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      font-family: 'Fira Code', monospace;
+    }
+    pre code { background: none; color: #94a3b8; padding: 0; font-size: 1em; }
+    .cmd     { color: #38bdf8; font-weight: 600; }
+    .comment { color: #475569; font-style: italic; }
+    .directive { color: #a78bfa; }
+    
+    /* Sub-nav tabs */
+    .gpu-subnav {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0 1.5rem;
+      flex-wrap: wrap;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+    .gpu-tab {
+      padding: 0.5rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .gpu-tab:hover, .gpu-tab.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .gpu-section { display: none; }
+    .gpu-section.active { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Table tweaks */
+    .data-table th:first-child { width: 35%; }
+    .data-table td code { white-space: nowrap; }
+    
+    /* Warning highlight */
+    .serious-warning {
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      border-left: 4px solid #ef4444;
+      border-radius: 0 8px 8px 0;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .serious-warning strong { color: #991b1b; }
+  </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="header">
+  <div class="header-container">
+    <div class="logo-area">
+      <i class="fa-solid fa-microchip" style="font-size:1.5rem;color:var(--accent)"></i>
+      <div class="site-title">HPC <span>Guide</span></div>
+    </div>
+    
+    <!-- Desktop Nav -->
+    <nav class="main-nav">
+      <a href="index.html" class="nav-item">Home</a>
+      
+      <div class="nav-item parent">
+        HPC Details
+        <div class="dropdown">
+          <a href="architecture.html">Architecture</a>
+          <a href="linux.html">Linux Basics</a>
+          <a href="pbs.html">PBS Jobs</a>
+          <a href="gpu.html" class="active">GPU & Sessions</a>
+        </div>
+      </div>
+      
+      <a href="index.html#reference" class="nav-item">Quick Reference</a>
+      <a href="index.html#support" class="nav-item">Support</a>
+    </nav>
+    
+    <!-- Mobile Toggle -->
+    <button class="menu-toggle" id="menuToggle">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ===== Mobile Offcanvas Menu ===== -->
+<aside class="offcanvas" id="offcanvasMenu">
+  <div class="offcanvas-header">
+    <div class="site-title">HPC <span>Guide</span></div>
+    <button class="offcanvas-close" id="offcanvasClose">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <nav class="offcanvas-nav">
+    <a href="index.html">Home</a>
+    
+    <a href="#" class="offcanvas-parent active">HPC Details <i class="fa-solid fa-chevron-down" style="float:right;font-size:0.8rem"></i></a>
+    <div class="offcanvas-sub" style="display:block">
+      <a href="architecture.html">Architecture</a>
+      <a href="linux.html">Linux Basics</a>
+      <a href="pbs.html">PBS Jobs</a>
+      <a href="gpu.html" class="active">GPU & Sessions</a>
+    </div>
+    
+    <a href="index.html#reference">Quick Reference</a>
+    <a href="index.html#support">Support</a>
+    <a href="https://www.iisermohali.ac.in" target="_blank">IISER Mohali</a>
+  </nav>
+</aside>
+
+<!-- ===== Page Header Bar ===== -->
+<div class="page-header-bar">
+  <div class="page-header-container">
+    <h1><i class="fa-solid fa-chip"></i> GPU & Sessions</h1>
+  </div>
+</div>
+
+<!-- ===== Main Content ===== -->
+<div class="content-container">
+
+  <!-- Sub-navigation Tabs (scrollable on mobile) -->
+  <div class="gpu-subnav">
+    <button class="gpu-tab active" onclick="showGpuSection('access', this)">GPU Access</button>
+    <button class="gpu-tab" onclick="showGpuSection('tmux', this)">Using tmux</button>
+    <button class="gpu-tab" onclick="showGpuSection('monitor', this)">Monitor GPUs</button>
+    <button class="gpu-tab" onclick="showGpuSection('ethics', this)">Ethics & Warnings</button>
+  </div>
+
+  <!-- ══ GPU ACCESS ══ -->
+  <section class="gpu-section active" id="access">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-info"></i> Current Status (May 2026)</h2>
+      <p>As of May 2026, the PBS scheduler for GPU nodes is experiencing intermittent issues. To ensure research continuity, we provide a temporary interactive access method. <strong>This is a workaround, not the standard workflow.</strong></p>
+      
+      <div class="callout warn">
+        <strong>Important:</strong> This method is for interactive development and testing only. For production runs, please use the standard PBS batch submission once the scheduler is fully restored.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-key"></i> How to Access GPU Nodes (Temporary Method)</h2>
+      <p>Use an <strong>interactive PBS session</strong> to get a shell on a GPU node. This works <strong>only from login1</strong>.</p>
+      
+      <pre><code><span class="comment"># From login1 only — this will NOT work from login2</span>
+<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub -I -q gpushort</span>
+<span class="comment"># or for longer sessions:</span>
+<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub -I -q gpulong</span></code></pre>
+      
+      <table class="data-table">
+        <tbody>
+          <tr><th>Queue</th><th>Max Walltime</th><th>Use For</th></tr>
+          <tr><td><code>gpushort</code></td><td>4 hours</td><td>Quick tests, debugging, short runs</td></tr>
+          <tr><td><code>gpulong</code></td><td>48 hours</td><td>Longer training jobs, production runs</td></tr>
+        </tbody>
+      </table>
+      
+      <div class="callout info">
+        <strong>What happens:</strong> After running the command, you'll be dropped directly into a shell on a GPU node (e.g., <code>gpu1</code>, <code>gpu2</code>, or <code>gpu3</code>). Your prompt will change to something like <code>[user@gpu2 ~]$</code>.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-triangle-exclamation"></i> The Problem: Terminal Closes = Job Ends</h2>
+      <p>If you run your code directly in this interactive session and then close your terminal (or lose connection), <strong>your job stops immediately</strong>. Any progress is lost.</p>
+      
+      <pre><code><span class="comment"># ❌ BAD: Run directly, then disconnect</span>
+<span class="t-prompt">[user@gpu2 ~]$</span> <span class="t-cmd">python train.py</span>
+<span class="comment"># ... training starts ...</span>
+<span class="comment"># You close terminal or SSH drops</span>
+<span class="comment"># → Job killed, all progress lost 😢</span></code></pre>
+      
+      <p><strong>Solution:</strong> Use <code>tmux</code> to create a persistent session that survives disconnections.</p>
+    </div>
+
+  </section>
+
+  <!-- ══ USING TMUX ══ -->
+  <section class="gpu-section" id="tmux">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-terminal"></i> What is tmux?</h2>
+      <p><code>tmux</code> is a terminal multiplexer. It lets you create sessions that keep running even after you disconnect. You can reattach later to check progress or interact with your job.</p>
+      
+      <div class="callout tip">
+        <strong>Not installed?</strong> If <code>tmux</code> is not available on your account, you can install it locally in your home directory. Search online for "install tmux without root" or ask the HPC support team for help.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-code"></i> tmux Quick Start</h2>
+      
+      <h3 style="font-size:1rem; margin:1rem 0 0.5rem; color:var(--primary);">1. Start a new tmux session</h3>
+      <pre><code><span class="t-prompt">[user@gpu2 ~]$</span> <span class="t-cmd">tmux new -s my_training</span></code></pre>
+      <p>You'll see a green status bar at the bottom. You're now inside the tmux session.</p>
+      
+      <h3 style="font-size:1rem; margin:1rem 0 0.5rem; color:var(--primary);">2. Run your code</h3>
+      <pre><code><span class="t-prompt">[user@gpu2 ~]$</span> <span class="t-cmd">python train.py</span>
+<span class="comment"># or whatever command you need</span></code></pre>
+      
+      <h3 style="font-size:1rem; margin:1rem 0 0.5rem; color:var(--primary);">3. Detach safely (job keeps running!)</h3>
+      <p>Press <span class="kbd">Ctrl</span> + <span class="kbd">B</span>, release both, then press <span class="kbd">D</span>.</p>
+      <pre><code><span class="t-comment"># You'll see: [detached]</span>
+<span class="t-prompt">[user@gpu2 ~]$</span> <span class="comment"># back to normal shell, job still runs in tmux</span></code></pre>
+      
+      <h3 style="font-size:1rem; margin:1rem 0 0.5rem; color:var(--primary);">4. Reattach later to check progress</h3>
+      <pre><code><span class="t-prompt">[user@gpu2 ~]$</span> <span class="t-cmd">tmux attach -t my_training</span></code></pre>
+      
+      <h3 style="font-size:1rem; margin:1rem 0 0.5rem; color:var(--primary);">5. List or kill sessions</h3>
+      <pre><code><span class="t-cmd">tmux ls</span>                    <span class="comment"># list all your tmux sessions</span>
+<span class="t-cmd">tmux kill-session -t my_training</span>  <span class="comment"># end a session when done</span></code></pre>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-diagram-project"></i> Full Workflow Example</h2>
+      <pre><code><span class="comment"># Step 1: From login1, get interactive GPU access</span>
+<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub -I -q gpulong</span>
+<span class="t-out">qsub: waiting for job 12345.iisermhpc1 to start
+qsub: job 12345.iisermhpc1 ready</span>
+
+<span class="comment"># Step 2: You're now on gpu2</span>
+<span class="t-prompt">[user@gpu2 ~]$</span> <span class="t-cmd">tmux new -s resnet_train</span>
+
+<span class="comment"># Step 3: Inside tmux, run your job</span>
+<span class="t-prompt">[user@gpu2 ~]$</span> <span class="t-cmd">python train_resnet.py --epochs 100</span>
+<span class="t-out">Epoch 1/100 - loss: 2.341 - acc: 0.12
+Epoch 2/100 - loss: 1.987 - acc: 0.24
+...</span>
+
+<span class="comment"># Step 4: Detach (Ctrl+B, then D)</span>
+<span class="t-comment"># [detached]</span>
+
+<span class="comment"># Step 5: Later, reattach to check</span>
+<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">ssh user@hpc.iisermohali.ac.in</span>
+<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub -I -q gpulong</span>  <span class="comment"># get back to same gpu node</span>
+<span class="t-prompt">[user@gpu2 ~]$</span> <span class="t-cmd">tmux attach -t resnet_train</span>
+<span class="t-out">Epoch 47/100 - loss: 0.412 - acc: 0.86
+...</span></code></pre>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-info"></i> tmux Quick Reference</h2>
+      <table class="data-table">
+        <tbody>
+          <tr><th>Command</th><th>What it does</th></tr>
+          <tr><td><code>tmux new -s name</code></td><td>Create new session named "name"</td></tr>
+          <tr><td><code>tmux ls</code></td><td>List all your tmux sessions</td></tr>
+          <tr><td><code>tmux attach -t name</code></td><td>Reattach to session "name"</td></tr>
+          <tr><td><code>tmux kill-session -t name</code></td><td>End session "name"</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">B</span> then <span class="kbd">D</span></td><td>Detach from current session</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">B</span> then <span class="kbd">%</span></td><td>Split pane vertically</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">B</span> then <span class="kbd">"</span></td><td>Split pane horizontally</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">B</span> then <span class="kbd">Arrow</span></td><td>Navigate between panes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- ══ MONITOR GPUs ══ -->
+  <section class="gpu-section" id="monitor">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-gauge"></i> Check GPU Usage with nvidia-smi</h2>
+      <p>Before starting your job, <strong>always check</strong> if GPUs are already in use. Use <code>nvidia-smi</code> to see real-time GPU status.</p>
+      
+      <pre><code><span class="t-prompt">[user@gpu3 ~]$</span> <span class="t-cmd">nvidia-smi</span></code></pre>
+      
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-prompt">(base) [ms21080@gpu3 ~]$</span> <span class="t-cmd">nvidia-smi</span>
+
+Fri May 22 19:59:37 2026
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 510.47.03    Driver Version: 510.47.03    CUDA Version: 11.6     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla T4            Off  | 00000000:60:00.0 Off |                    0 |
+| N/A   44C    P0    25W /  70W |      0MiB / 15360MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  Tesla T4            Off  | 00000000:61:00.0 Off |                    0 |
+| N/A   48C    P0    27W /  70W |      0MiB / 15360MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   2  Tesla T4            Off  | 00000000:DA:00.0 Off |                    0 |
+| N/A   48C    P0    26W /  70W |      0MiB / 15360MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   3  Tesla T4            Off  | 00000000:DB:00.0 Off |                    0 |
+| N/A   40C    P0    25W /  70W |      0MiB / 15360MiB |      6%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+</div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-magnifying-glass"></i> How to Read nvidia-smi Output</h2>
+      
+      <table class="data-table">
+        <tbody>
+          <tr><th>Column</th><th>What to look for</th></tr>
+          <tr><td><strong>GPU-Util</strong></td><td>Percentage of GPU currently in use. 0% = idle, 90%+ = heavily used.</td></tr>
+          <tr><td><strong>Memory-Usage</strong></td><td>How much VRAM is occupied. If near 15360MiB, GPU is full.</td></tr>
+          <tr><td><strong>Processes</strong></td><td>Lists active jobs. "No running processes" = GPU is free.</td></tr>
+          <tr><td><strong>Temp / Pwr</strong></td><td>High temps (>80°C) or power caps may indicate heavy load.</td></tr>
+        </tbody>
+      </table>
+      
+      <div class="callout info">
+        <strong>Rule of thumb:</strong> If a GPU shows >80% utilization or >12GB memory used, assume someone is actively using it. Choose a different GPU or wait.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-rotate"></i> Watch GPU Status Live</h2>
+      <p>Use <code>watch</code> to refresh <code>nvidia-smi</code> every few seconds:</p>
+      <pre><code><span class="t-cmd">watch</span> -n 2 nvidia-smi</code></pre>
+      <p>Press <span class="kbd">Ctrl</span> + <span class="kbd">C</span> to stop watching.</p>
+    </div>
+
+  </section>
+
+  <!-- ══ ETHICS & WARNINGS ══ -->
+  <section class="gpu-section" id="ethics">
+    
+    <div class="serious-warning">
+      <h3 style="margin:0 0 0.5rem; display:flex; align-items:center; gap:0.5rem;">
+        <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
+        <strong>Serious Warning: Use Responsibly</strong>
+      </h3>
+      <p>This interactive GPU access method bypasses normal scheduler controls. <strong>With great power comes great responsibility.</strong></p>
+      <ul style="margin:0.5rem 0 0; padding-left:1.25rem;">
+        <li><strong>Never kill another user's job.</strong> Use <code>nvidia-smi</code> to check before starting work.</li>
+        <li><strong>Do not monopolize GPUs.</strong> If you're done, exit cleanly so others can use the resource.</li>
+        <li><strong>Do not run destructive commands.</strong> You have elevated access — misuse can affect everyone.</li>
+        <li><strong>Report issues, don't exploit them.</strong> If you find a problem, tell the admin, don't take advantage.</li>
+      </ul>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-hand"></i> Good Practices Checklist</h2>
+      <ul>
+        <li>✅ Always run <code>nvidia-smi</code> before starting a job</li>
+        <li>✅ Use <code>tmux</code> so your job survives disconnections</li>
+        <li>✅ Name your tmux sessions clearly (e.g., <code>myproject_train</code>)</li>
+        <li>✅ Clean up: <code>tmux kill-session</code> when your job is done</li>
+        <li>✅ Exit GPU node cleanly: type <code>exit</code> when finished</li>
+        <li>✅ Be considerate: GPU time is shared — don't block others unnecessarily</li>
+      </ul>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-question"></i> What If I Accidentally Kill Someone's Job?</h2>
+      <ol style="padding-left:1.25rem; margin:0.5rem 0;">
+        <li><strong>Stop immediately.</strong> Don't try to hide it or restart it yourself.</li>
+        <li><strong>Notify the user</strong> if you know who was running the job.</li>
+        <li><strong>Inform HPC support</strong> at <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a> with details.</li>
+        <li><strong>Learn from it.</strong> Double-check <code>nvidia-smi</code> and process lists next time.</li>
+      </ol>
+      <div class="callout warn">
+        <strong>Remember:</strong> Accidents happen. Honesty and quick communication minimize harm and maintain trust in the shared resource.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-flag"></i> When the Scheduler Is Fixed</h2>
+      <p>Once the PBS scheduler for GPU nodes is fully restored, we will return to the standard batch submission workflow:</p>
+      <pre><code><span class="comment"># Future standard method (not yet available):</span>
+<span class="t-prompt">[user@login1 ~]$</span> <span class="t-cmd">qsub gpu_job.pbs</span></code></pre>
+      <p>We will announce the transition via email and update this documentation. Until then, please use the interactive method responsibly.</p>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- ===== Footer ===== -->
+<footer class="footer-bar">
+  <div class="footer-container">
+    <div class="footer-card">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#access">GPU Access</a></li>
+        <li><a href="#tmux">Using tmux</a></li>
+        <li><a href="#monitor">Monitor GPUs</a></li>
+        <li><a href="#ethics">Ethics & Warnings</a></li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>Related Pages</h3>
+      <ul>
+        <li><a href="pbs.html">PBS Jobs Guide</a></li>
+        <li><a href="linux.html">Linux Basics</a></li>
+        <li><a href="architecture.html">Cluster Architecture</a></li>
+        <li><a href="index.html#support">Get Support</a></li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>Contact</h3>
+      <p>
+        <i class="fa-solid fa-envelope"></i> <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a><br>
+        <i class="fa-solid fa-clock"></i> Mon–Fri, 10:00–16:00 IST
+      </p>
+      <p style="margin-top:1rem; font-size:0.85rem; color:#64748b">
+        © 2026 IISER Mohali HPC Team
+      </p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <a href="#">Report an Issue</a> • <a href="#">Privacy Policy</a>
+  </div>
+</footer>
+
+<!-- ===== Scripts ===== -->
+<script>
+  // GPU section tabs
+  function showGpuSection(id, btn) {
+    document.querySelectorAll('.gpu-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.gpu-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    // Smooth scroll to content start
+    const container = document.querySelector('.content-container');
+    if (container) {
+      window.scrollTo({ top: container.offsetTop - 20, behavior: 'smooth' });
+    }
+  }
+
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const offcanvas = document.getElementById('offcanvasMenu');
+  const offcanvasClose = document.getElementById('offcanvasClose');
+  
+  menuToggle?.addEventListener('click', (e) => { e.stopPropagation(); offcanvas.classList.add('open'); });
+  offcanvasClose?.addEventListener('click', () => offcanvas.classList.remove('open'));
+  
+  // Close offcanvas when clicking outside
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 900 && 
+        !offcanvas.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+      offcanvas.classList.remove('open');
+    }
+  });
+  
+  // Mobile dropdown toggle
+  document.querySelectorAll('.offcanvas-parent').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      item.classList.toggle('active');
+      const sub = item.nextElementSibling;
+      if (sub?.classList.contains('offcanvas-sub')) {
+        sub.style.display = sub.style.display === 'block' ? 'none' : 'block';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

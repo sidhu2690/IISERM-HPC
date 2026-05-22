@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Linux Basics | IISER Mohali HPC</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
+  <!-- Main Styles -->
+  <link rel="stylesheet" href="style.css"/>
+  
+  <!-- Page-Specific Styles (Terminal + KBD) -->
+  <style>
+    /* Terminal block */
+    .terminal {
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 0.75rem 0;
+      font-size: 0.78rem;
+    }
+    .terminal-bar {
+      background: #1e293b;
+      padding: 0.4rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .terminal-bar .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .t-red    { background: #ef4444; }
+    .t-yellow { background: #eab308; }
+    .t-green  { background: #22c55e; }
+    .terminal-body {
+      padding: 0.85rem 1rem;
+      color: #94a3b8;
+      font-family: 'Fira Code', monospace;
+      line-height: 1.8;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .t-prompt  { color: #22c55e; }
+    .t-cmd     { color: #38bdf8; font-weight: 600; }
+    .t-out     { color: #94a3b8; }
+    .t-dir     { color: #60a5fa; }
+    .t-file    { color: #f8fafc; }
+    .t-comment { color: #475569; font-style: italic; }
+    .t-hi      { color: #fbbf24; }
+    .t-err     { color: #f87171; }
+    .t-dim     { color: #334155; }
+    
+    /* Keyboard shortcut styling */
+    .kbd {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-bottom: 2px solid #94a3b8;
+      border-radius: 4px;
+      padding: 0.1rem 0.45rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8em;
+      color: #1e293b;
+      margin: 0 0.1rem;
+    }
+    
+    /* Sub-nav tabs for linux sections */
+    .linux-subnav {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0 1.5rem;
+      flex-wrap: wrap;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+    .linux-tab {
+      padding: 0.5rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .linux-tab:hover, .linux-tab.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .linux-section { display: none; }
+    .linux-section.active { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Table tweaks for this page */
+    .data-table th:first-child { width: 35%; }
+    .data-table td code { white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="header">
+  <div class="header-container">
+    <div class="logo-area">
+      <i class="fa-solid fa-microchip" style="font-size:1.5rem;color:var(--accent)"></i>
+      <div class="site-title">HPC <span>Guide</span></div>
+    </div>
+    
+    <!-- Desktop Nav -->
+    <nav class="main-nav">
+      <a href="index.html" class="nav-item">Home</a>
+      
+      <div class="nav-item parent">
+        HPC Details
+        <div class="dropdown">
+          <a href="architecture.html">Architecture</a>
+          <a href="linux.html" class="active">Linux Basics</a>
+          <a href="pbs.html">PBS Jobs</a>
+          <a href="gpu.html">GPU & Nohup</a>
+        </div>
+      </div>
+      
+      <a href="index.html#reference" class="nav-item">Quick Reference</a>
+      <a href="index.html#support" class="nav-item">Support</a>
+    </nav>
+    
+    <!-- Mobile Toggle -->
+    <button class="menu-toggle" id="menuToggle">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ===== Mobile Offcanvas Menu ===== -->
+<aside class="offcanvas" id="offcanvasMenu">
+  <div class="offcanvas-header">
+    <div class="site-title">HPC <span>Guide</span></div>
+    <button class="offcanvas-close" id="offcanvasClose">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <nav class="offcanvas-nav">
+    <a href="index.html">Home</a>
+    
+    <a href="#" class="offcanvas-parent active">HPC Details <i class="fa-solid fa-chevron-down" style="float:right;font-size:0.8rem"></i></a>
+    <div class="offcanvas-sub" style="display:block">
+      <a href="architecture.html">Architecture</a>
+      <a href="linux.html" class="active">Linux Basics</a>
+      <a href="pbs.html">PBS Jobs</a>
+      <a href="gpu.html">GPU & Nohup</a>
+    </div>
+    
+    <a href="index.html#reference">Quick Reference</a>
+    <a href="index.html#support">Support</a>
+    <a href="https://www.iisermohali.ac.in" target="_blank">IISER Mohali</a>
+  </nav>
+</aside>
+
+<!-- ===== Page Header Bar ===== -->
+<div class="page-header-bar">
+  <div class="page-header-container">
+    <h1><i class="fa-solid fa-terminal"></i> Linux Basics</h1>
+  </div>
+</div>
+
+<!-- ===== Main Content ===== -->
+<div class="content-container">
+
+  <!-- Sub-navigation Tabs (scrollable on mobile) -->
+  <div class="linux-subnav">
+    <button class="linux-tab active" onclick="showLinuxSection('navigation', this)">Navigation</button>
+    <button class="linux-tab" onclick="showLinuxSection('files', this)">Files & Folders</button>
+    <button class="linux-tab" onclick="showLinuxSection('viewing', this)">Viewing Files</button>
+    <button class="linux-tab" onclick="showLinuxSection('editor', this)">Text Editor</button>
+    <button class="linux-tab" onclick="showLinuxSection('disk', this)">Disk Usage</button>
+    <button class="linux-tab" onclick="showLinuxSection('transfer', this)">File Transfer</button>
+    <button class="linux-tab" onclick="showLinuxSection('shortcuts', this)">Shortcuts</button>
+  </div>
+
+  <!-- ══ NAVIGATION ══ -->
+  <section class="linux-section active" id="navigation">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-info"></i> The Basics</h2>
+      <p>When you log into the cluster you start in your home directory. These are the commands you will use every single day.</p>
+      <table class="data-table">
+        <tbody>
+          <tr><th>Command</th><td>What it does</td></tr>
+          <tr><td><code>pwd</code></td><td>Shows your current location</td></tr>
+          <tr><td><code>ls</code></td><td>Lists files and folders here</td></tr>
+          <tr><td><code>ls -l</code></td><td>Detailed list with permissions, size, date</td></tr>
+          <tr><td><code>ls -a</code></td><td>Shows hidden files too</td></tr>
+          <tr><td><code>ls -lh</code></td><td>Detailed list with human readable sizes</td></tr>
+          <tr><td><code>cd foldername</code></td><td>Go into a folder</td></tr>
+          <tr><td><code>cd ..</code></td><td>Go back one level</td></tr>
+          <tr><td><code>cd</code></td><td>Go straight to home directory</td></tr>
+          <tr><td><code>cd /full/path</code></td><td>Jump to any location directly</td></tr>
+        </tbody>
+      </table>
+      <div class="callout info">
+        <strong>Tip:</strong> Press <span class="kbd">Tab</span> to autocomplete a folder or file name. Press it twice to see all matching options. This saves a lot of typing and prevents typos.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-terminal"></i> Example Session</h2>
+      <p>Follow this from top to bottom. Notice how the prompt changes as you move between folders.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-comment"># Check where you are after logging in</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">pwd</span>
+<span class="t-out">/home/ms21080</span>
+
+<span class="t-comment"># See what is in your home folder</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">projects</span>  <span class="t-file">notes.txt</span>  <span class="t-file">submit.sh</span>
+
+<span class="t-comment"># Detailed view with sizes and dates</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls -lh</span>
+<span class="t-out">drwxr-xr-x 3 ms21080 ms21080 4.0K Jan 12 10:20 </span><span class="t-dir">projects</span>
+<span class="t-out">-rw-r--r-- 1 ms21080 ms21080  512 Jan 11 14:32 </span><span class="t-file">notes.txt</span>
+<span class="t-out">-rw-r--r-- 1 ms21080 ms21080  248 Jan 12 09:05 </span><span class="t-file">submit.sh</span>
+
+<span class="t-comment"># Go into projects folder</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">cd projects</span>
+<span class="t-prompt">[ms21080@login1 projects]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">md_simulation</span>  <span class="t-dir">dft_run1</span>
+
+<span class="t-comment"># Go deeper</span>
+<span class="t-prompt">[ms21080@login1 projects]$</span> <span class="t-cmd">cd md_simulation</span>
+<span class="t-prompt">[ms21080@login1 md_simulation]$</span> <span class="t-cmd">pwd</span>
+<span class="t-out">/home/ms21080/projects/md_simulation</span>
+
+<span class="t-comment"># Show hidden files too with -la</span>
+<span class="t-prompt">[ms21080@login1 md_simulation]$</span> <span class="t-cmd">ls -la</span>
+<span class="t-out">drwxr-xr-x 2 ms21080 ms21080 4096 Jan 12 10:20 </span><span class="t-dir">.</span>
+<span class="t-out">drwxr-xr-x 4 ms21080 ms21080 4096 Jan 12 10:20 </span><span class="t-dir">..</span>
+<span class="t-out">-rw-r--r-- 1 ms21080 ms21080  128 Jan 12 10:20 </span><span class="t-file">.hidden_config</span>
+<span class="t-out">-rw-r--r-- 1 ms21080 ms21080 2048 Jan 12 10:20 </span><span class="t-file">input.dat</span>
+
+<span class="t-comment"># Go back one level</span>
+<span class="t-prompt">[ms21080@login1 md_simulation]$</span> <span class="t-cmd">cd ..</span>
+<span class="t-prompt">[ms21080@login1 projects]$</span> <span class="t-cmd">pwd</span>
+<span class="t-out">/home/ms21080/projects</span>
+
+<span class="t-comment"># Jump straight home from anywhere</span>
+<span class="t-prompt">[ms21080@login1 projects]$</span> <span class="t-cmd">cd</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">pwd</span>
+<span class="t-out">/home/ms21080</span>
+
+<span class="t-comment"># Jump to scratch directly using full path</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">cd /scratch/ms21080</span>
+<span class="t-prompt">[ms21080@login1 ms21080]$</span> <span class="t-cmd">pwd</span>
+<span class="t-out">/scratch/ms21080</span></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ FILES AND FOLDERS ══ -->
+  <section class="linux-section" id="files">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-folder-plus"></i> mkdir — Creating Folders</h2>
+      <p><code>mkdir</code> creates a new folder. Use <code>-p</code> to create a whole nested path in one go. Notice we do <code>ls</code> after each step to see what changed.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-comment"># Start — home directory is empty except notes.txt</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-file">notes.txt</span>
+
+<span class="t-comment"># Create a new folder</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">mkdir my_project</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-file">notes.txt</span>
+
+<span class="t-comment"># Create nested folders in one go with -p</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">mkdir -p my_project/run1/output</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">cd my_project</span>
+<span class="t-prompt">[ms21080@login1 my_project]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">run1</span>
+
+<span class="t-prompt">[ms21080@login1 my_project]$</span> <span class="t-cmd">cd run1</span>
+<span class="t-prompt">[ms21080@login1 run1]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">output</span>
+
+<span class="t-comment"># Go back home</span>
+<span class="t-prompt">[ms21080@login1 run1]$</span> <span class="t-cmd">cd</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-copy"></i> cp — Copying Files and Folders</h2>
+      <p><code>cp</code> copies a file. To copy a whole folder use <code>-r</code> (recursive).</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-file">input.dat</span>  <span class="t-file">notes.txt</span>
+
+<span class="t-comment"># Copy a file (creates a new file alongside original)</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">cp input.dat input_backup.dat</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-file">input.dat</span>  <span class="t-file">input_backup.dat</span>  <span class="t-file">notes.txt</span>
+
+<span class="t-comment"># Copy a file into a folder</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">cp input.dat my_project/run1/</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls my_project/run1/</span>
+<span class="t-file">input.dat</span>  <span class="t-dir">output</span>
+
+<span class="t-comment"># Copy a whole folder with -r</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">cp -r my_project my_project_backup</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-dir">my_project_backup</span>  <span class="t-file">input.dat</span>  <span class="t-file">input_backup.dat</span>  <span class="t-file">notes.txt</span></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-arrow-right-arrow-left"></i> mv — Moving and Renaming</h2>
+      <p><code>mv</code> is used for both moving a file to another folder and renaming it. There is no separate rename command in Linux.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-dir">my_project_backup</span>  <span class="t-file">input.dat</span>  <span class="t-file">input_backup.dat</span>
+
+<span class="t-comment"># Rename a file — old name is gone, new name appears</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">mv input_backup.dat input_v2.dat</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-dir">my_project_backup</span>  <span class="t-file">input.dat</span>  <span class="t-file">input_v2.dat</span>
+
+<span class="t-comment"># Move a file into a folder</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">mv input_v2.dat my_project/</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-dir">my_project_backup</span>  <span class="t-file">input.dat</span>
+
+<span class="t-comment"># Confirm it is now inside my_project</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls my_project/</span>
+<span class="t-dir">run1</span>  <span class="t-file">input_v2.dat</span>
+
+<span class="t-comment"># Rename a folder the same way</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">mv my_project_backup old_backup</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-dir">old_backup</span>  <span class="t-file">input.dat</span></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-trash"></i> rm — Deleting Files and Folders</h2>
+      <p><code>rm</code> deletes a file. To delete a folder and everything inside it use <code>rm -rf</code>.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-dir">old_backup</span>  <span class="t-file">input.dat</span>  <span class="t-file">temp.log</span>
+
+<span class="t-comment"># Delete a single file</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">rm temp.log</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-dir">old_backup</span>  <span class="t-file">input.dat</span>
+
+<span class="t-comment"># Delete a folder and everything inside it</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">rm -rf old_backup</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">my_project</span>  <span class="t-file">input.dat</span>
+
+<span class="t-comment"># old_backup is completely gone</span></div>
+      </div>
+
+      <div class="callout warn">
+        <strong>Warning:</strong> There is no recycle bin in Linux. Once you run <code>rm</code> the file is gone permanently. Be very careful with <code>rm -rf</code>. Always double check the path before running it.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ VIEWING FILES ══ -->
+  <section class="linux-section" id="viewing">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-eye"></i> cat, less, head, tail</h2>
+      <table class="data-table">
+        <tbody>
+          <tr><th>Command</th><th>What it does</th><th>Best for</th></tr>
+          <tr><td><code>cat file.txt</code></td><td>Prints whole file at once</td><td>Small files</td></tr>
+          <tr><td><code>less file.txt</code></td><td>Opens scrollable viewer</td><td>Large files and logs</td></tr>
+          <tr><td><code>head file.txt</code></td><td>First 10 lines</td><td>Quick peek at file start</td></tr>
+          <tr><td><code>head -n 20 file.txt</code></td><td>First 20 lines</td><td>Custom line count</td></tr>
+          <tr><td><code>tail file.txt</code></td><td>Last 10 lines</td><td>Quick peek at file end</td></tr>
+          <tr><td><code>tail -n 50 file.txt</code></td><td>Last 50 lines</td><td>Custom line count</td></tr>
+          <tr><td><code>tail -f file.txt</code></td><td>Follows file as it grows live</td><td>Watching a running job log</td></tr>
+        </tbody>
+      </table>
+      <div class="callout info">
+        <strong>Use less for big files:</strong> Never use <code>cat</code> on a large file as it will flood your terminal. Use <code>less</code> instead. Press <span class="kbd">Space</span> to scroll down, <span class="kbd">b</span> to go back, <span class="kbd">q</span> to quit.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-terminal"></i> Example Session</h2>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-file">submit.sh</span>  <span class="t-file">job.out</span>  <span class="t-file">output.dat</span>
+
+<span class="t-comment"># Print a small script file</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">cat submit.sh</span>
+<span class="t-out">#!/bin/bash
+#PBS -N MyJob
+#PBS -q short
+#PBS -l nodes=1:ppn=4
+python script.py</span>
+
+<span class="t-comment"># Check last few lines of job output</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">tail -n 5 job.out</span>
+<span class="t-out">Step 980/1000 | Loss: 0.0421
+Step 990/1000 | Loss: 0.0398
+Step 1000/1000 | Loss: 0.0374
+Training complete.
+Saved to output.dat</span>
+
+<span class="t-comment"># Watch a log update live as the job runs</span>
+<span class="t-comment"># Press Ctrl+C to stop watching (job keeps running)</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">tail -f job.out</span>
+<span class="t-out">Step 100/1000 | Loss: 0.8231
+Step 101/1000 | Loss: 0.8190
+Step 102/1000 | Loss: 0.8144</span>
+<span class="t-hi">^C</span>
+
+<span class="t-comment"># Check first 5 lines of output file</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">head -n 5 output.dat</span>
+<span class="t-out">x         y         energy
+0.000000  0.000000  -1042.31
+0.100000  0.000000  -1041.98
+0.200000  0.000000  -1041.45
+0.300000  0.000000  -1040.87</span></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-magnifying-glass"></i> grep — Searching Inside Files</h2>
+      <p>Very useful for finding errors or warnings in long job output files.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-comment"># Search for the word "error" in log</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">grep "error" job.out</span>
+<span class="t-err">FileNotFoundError: input.dat not found</span>
+
+<span class="t-comment"># Case insensitive search</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">grep -i "warning" job.out</span>
+<span class="t-hi">Warning: convergence not reached at step 450
+WARNING: memory usage above 80%</span>
+
+<span class="t-comment"># Show line numbers of matches</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">grep -n "Step" job.out</span>
+<span class="t-out">12: Step 1/1000 | Loss: 1.2341
+13: Step 2/1000 | Loss: 1.1982</span></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ TEXT EDITOR ══ -->
+  <section class="linux-section" id="editor">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-info"></i> Using nano</h2>
+      <p>nano is a simple text editor that runs inside the terminal. You will mostly use it to edit PBS scripts and config files. It is the easiest terminal editor to learn.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-file">submit.sh</span>  <span class="t-file">notes.txt</span>
+
+<span class="t-comment"># Open an existing file</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">nano submit.sh</span>
+<span class="t-dim">  [ nano editor opens — edit your file here ]</span>
+<span class="t-dim">  [ Ctrl+O to save, Ctrl+X to exit         ]</span>
+
+<span class="t-comment"># Create a brand new file</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">nano new_script.sh</span>
+<span class="t-dim">  [ nano creates and opens the new file ]</span>
+
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-file">submit.sh</span>  <span class="t-file">notes.txt</span>  <span class="t-file">new_script.sh</span></div>
+      </div>
+
+      <table class="data-table">
+        <tbody>
+          <tr><th>Shortcut</th><td>What it does</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">O</span> then <span class="kbd">Enter</span></td><td>Save the file</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">X</span></td><td>Exit nano</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">K</span></td><td>Cut the current line</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">U</span></td><td>Paste the cut line</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">W</span></td><td>Search for text</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- ══ DISK USAGE ══ -->
+  <section class="linux-section" id="disk">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-info"></i> Why This Matters</h2>
+      <p>The cluster has storage quotas. If your home or scratch folder fills up, your jobs will fail because they cannot write output files. Check your usage regularly after long runs.</p>
+
+      <table class="data-table">
+        <tbody>
+          <tr><th>Command</th><td>What it shows</td></tr>
+          <tr><td><code>du -sh *</code></td><td>Size of each item in current folder</td></tr>
+          <tr><td><code>du -sh .</code></td><td>Total size of current folder</td></tr>
+          <tr><td><code>du -sh /persistent/data1/ms21080</code></td><td>Total size of your main working directory</td></tr>
+          <tr><td><code>df -h</code></td><td>Disk space used and free on all partitions</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-terminal"></i> Example Session</h2>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">md_simulation</span>  <span class="t-dir">dft_run1</span>  <span class="t-file">notes.txt</span>  <span class="t-file">submit.sh</span>
+
+<span class="t-comment"># Check size of each item in current folder</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">du -sh *</span>
+<span class="t-out">1.2G    </span><span class="t-hi">md_simulation</span>
+<span class="t-out">250M    dft_run1
+4.0K    notes.txt
+4.0K    submit.sh</span>
+
+<span class="t-comment"># Total size of current folder</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">du -sh .</span>
+<span class="t-out">1.5G    .</span>
+
+<span class="t-comment"># Move to your working directory (persistent storage)</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">cd /persistent/data1/ms21080/</span>
+
+<span class="t-comment"># Check what is inside</span>
+<span class="t-prompt">[ms21080@login1 ms21080]$</span> <span class="t-cmd">ls</span>
+<span class="t-dir">AGAIN</span>  <span class="t-file">cellwise_segmentation.C</span>  <span class="t-dir">Data</span>  <span class="t-dir">HGCAL</span>
+
+<span class="t-comment"># Check size of each item</span>
+<span class="t-prompt">[ms21080@login1 ms21080]$</span> <span class="t-cmd">du -sh *</span>
+<span class="t-out">2.1G    </span><span class="t-hi">Data</span>
+<span class="t-out">850M    HGCAL
+120M    AGAIN
+4.0K    cellwise_segmentation.C</span>
+
+<span class="t-comment"># Total usage of your working directory</span>
+<span class="t-prompt">[ms21080@login1 ms21080]$</span> <span class="t-cmd">du -sh .</span>
+<span class="t-out">3.1G    .</span>
+
+<span class="t-comment"># Overall disk usage on cluster</span>
+<span class="t-prompt">[ms21080@login1 ms21080]$</span> <span class="t-cmd">df -h</span>
+<span class="t-out">Filesystem                       Size  Used Avail Use% Mounted on
+192.168.12.247:/globalstorage1   102T   67T   30T  70% /persistent/data1
+192.168.12.246:/globalstorage2   102T   27T   70T  28% /persistent/data2
+10.10.10.248:/flashstorage/home   21T  1.9T   18T  10% /home</span></div>
+      </div>
+      <div class="callout info">
+        <strong>Note:</strong> If <code>df -h</code> shows scratch at 95% or above, contact the admin.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ FILE TRANSFER ══ -->
+  <section class="linux-section" id="transfer">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-plug"></i> Connecting to the Cluster</h2>
+      <p>You connect to the cluster using SSH. The login node IP address is <code>172.16.3.200</code>. You must be on the IISER Mohali network or VPN for this to work.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-comment"># Basic SSH login</span>
+<span class="t-prompt">[ms21080@laptop ~]$</span> <span class="t-cmd">ssh</span> ms21080@172.16.3.200
+<span class="t-out">ms21080@172.16.3.200's password:
+Last login: Mon Jan 13 09:21:14 2025 from 172.16.1.45</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span>
+
+<span class="t-comment"># SSH with -Y flag (enables graphical apps like xterm, gnuplot)</span>
+<span class="t-prompt">[ms21080@laptop ~]$</span> <span class="t-cmd">ssh</span> -Y ms21080@172.16.3.200
+<span class="t-prompt">[ms21080@login1 ~]$</span></div>
+      </div>
+
+      <div class="callout info">
+        <strong>When to use -Y:</strong> The <code>-Y</code> flag enables X11 forwarding. Use it only if you need to open a graphical window from the cluster on your local screen, for example running a GUI application or plotting tool. For normal terminal work you do not need it.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-desktop"></i> Recommended for Windows: MobaXterm</h2>
+      <p>If you are on Windows, use <strong>MobaXterm</strong>. It gives you SSH, a file browser, and drag and drop file transfer all in one program. You do not need to type any <code>scp</code> commands at all.</p>
+      <p>Download it from <strong>mobaxterm.mobatek.net</strong>. The free version is enough for all HPC work.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-comment"># In MobaXterm, connect like this in the terminal tab</span>
+<span class="t-prompt">MobaXterm$</span> <span class="t-cmd">ssh</span> ms21080@172.16.3.200
+
+<span class="t-comment"># The left panel shows your cluster files automatically</span>
+<span class="t-comment"># Drag files from Windows Explorer into the panel to upload</span>
+<span class="t-comment"># Drag files from the panel to your desktop to download</span></div>
+      </div>
+
+      <div class="callout tip">
+        <strong>MobaXterm also supports X11 forwarding by default.</strong> So graphical apps launched from the cluster will open on your Windows screen automatically without needing the <code>-Y</code> flag.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-code"></i> scp — Copy Files Over SSH</h2>
+      <p><code>scp</code> works exactly like <code>cp</code> but over SSH. You run it from your local computer, not from inside the cluster. The format is always <code>scp source destination</code> where remote paths include the server address.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-comment"># Upload a single file from laptop to your home on cluster</span>
+<span class="t-prompt">[ms21080@laptop ~]$</span> <span class="t-cmd">scp</span> myfile.txt ms21080@172.16.3.200:/home/ms21080/
+<span class="t-out">myfile.txt                        100%  512     1.2MB/s   00:00</span>
+
+<span class="t-comment"># Confirm it arrived</span>
+<span class="t-prompt">[ms21080@laptop ~]$</span> <span class="t-cmd">ssh</span> ms21080@172.16.3.200 <span class="t-out">"ls /home/ms21080/"</span>
+<span class="t-out">myfile.txt  submit.sh  notes.txt  projects</span>
+
+<span class="t-comment"># Upload a whole folder to scratch (use -r for folders)</span>
+<span class="t-prompt">[ms21080@laptop ~]$</span> <span class="t-cmd">scp</span> -r my_inputs/ ms21080@172.16.3.200:/scratch/ms21080/
+<span class="t-out">input_1.dat                       100%  2048     3.1MB/s   00:00
+input_2.dat                       100%  2048     3.1MB/s   00:00
+config.ini                        100%   128     0.5MB/s   00:00</span>
+
+<span class="t-comment"># Download a single result file from cluster to current local folder</span>
+<span class="t-prompt">[ms21080@laptop ~]$</span> <span class="t-cmd">scp</span> ms21080@172.16.3.200:/home/ms21080/results.dat .
+<span class="t-out">results.dat                       100%  8192     4.2MB/s   00:00</span>
+
+<span class="t-comment"># Download a whole folder from cluster to local folder</span>
+<span class="t-prompt">[ms21080@laptop ~]$</span> <span class="t-cmd">scp</span> -r ms21080@172.16.3.200:/scratch/ms21080/run1/ ./local_run1/
+<span class="t-out">output_step1.dat                  100%   512KB   2.1MB/s   00:00
+output_step2.dat                  100%   512KB   2.1MB/s   00:00
+job.log                           100%   128KB   1.8MB/s   00:00</span></div>
+      </div>
+
+      <div class="callout info">
+        <strong>The dot at the end:</strong> The <code>.</code> in a download command means copy it here, into my current local folder. You can replace it with any path like <code>~/Desktop/</code> or <code>C:\Users\yourname\Downloads\</code>.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ SHORTCUTS ══ -->
+  <section class="linux-section" id="shortcuts">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-hand"></i> Keyboard Shortcuts</h2>
+      <table class="data-table">
+        <tbody>
+          <tr><th>Shortcut</th><td>What it does</td></tr>
+          <tr><td><span class="kbd">Tab</span></td><td>Autocomplete file or folder name</td></tr>
+          <tr><td><span class="kbd">Tab</span> <span class="kbd">Tab</span></td><td>Show all possible completions</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">C</span></td><td>Stop the currently running process immediately</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">Z</span></td><td>Pause the current process and send it to background</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">R</span></td><td>Search through command history by typing</td></tr>
+          <tr><td><span class="kbd">Up Arrow</span></td><td>Go to previous command</td></tr>
+          <tr><td><span class="kbd">Down Arrow</span></td><td>Go forward through history</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">L</span></td><td>Clear the terminal screen</td></tr>
+        </tbody>
+      </table>
+      <div class="callout info">
+        <strong>Ctrl+C is very useful:</strong> If a command is stuck or running too long or you ran the wrong thing, press <span class="kbd">Ctrl+C</span> to stop it immediately.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-clock-rotate-left"></i> Command History</h2>
+      <p>The terminal remembers all your previous commands. You can search and reuse them instead of typing everything again.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot t-red"></span>
+          <span class="dot t-yellow"></span>
+          <span class="dot t-green"></span>
+        </div>
+        <div class="terminal-body"><span class="t-comment"># See recent commands</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">history</span>
+<span class="t-out">  245  cd /scratch/ms21080
+  246  ls -lh
+  247  qsub submit.sh
+  248  qstat -u ms21080
+  249  tail -f job.out
+  250  history</span>
+
+<span class="t-comment"># Press Ctrl+R and start typing to search history</span>
+<span class="t-prompt">(reverse-i-search)`qsub':</span> <span class="t-hi">qsub submit.sh</span>
+<span class="t-comment"># Press Enter to run it</span>
+
+<span class="t-comment"># Run a specific command from history by its number</span>
+<span class="t-prompt">[ms21080@login1 ~]$</span> <span class="t-cmd">!247</span>
+<span class="t-out">Your job 10521 ("MyJob") has been submitted</span></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-star"></i> A Few More Useful Commands</h2>
+      <table class="data-table">
+        <tbody>
+          <tr><th>Command</th><td>What it does</td></tr>
+          <tr><td><code>whoami</code></td><td>Print your username</td></tr>
+          <tr><td><code>echo $HOME</code></td><td>Print your home directory path</td></tr>
+          <tr><td><code>ls *.sh</code></td><td>List only files ending in .sh</td></tr>
+          <tr><td><code>ls run*</code></td><td>List all files starting with run</td></tr>
+          <tr><td><code>clear</code></td><td>Clear the terminal screen</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- ===== Footer ===== -->
+<footer class="footer-bar">
+  <div class="footer-container">
+    <div class="footer-card">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#navigation">Navigation</a></li>
+        <li><a href="#files">Files & Folders</a></li>
+        <li><a href="#viewing">Viewing Files</a></li>
+        <li><a href="#editor">Text Editor</a></li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>Related Pages</h3>
+      <ul>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="pbs.html">PBS Jobs</a></li>
+        <li><a href="gpu.html">GPU & Nohup</a></li>
+        <li><a href="index.html#reference">Command Reference</a></li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>Contact</h3>
+      <p>
+        <i class="fa-solid fa-envelope"></i> <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a><br>
+        <i class="fa-solid fa-clock"></i> Mon–Fri, 10:00–16:00 IST
+      </p>
+      <p style="margin-top:1rem; font-size:0.85rem; color:#64748b">
+        © 2026 IISER Mohali HPC Team
+      </p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <a href="#">Report an Issue</a> • <a href="#">Privacy Policy</a>
+  </div>
+</footer>
+
+<!-- ===== Scripts ===== -->
+<script>
+  // Linux section tabs
+  function showLinuxSection(id, btn) {
+    document.querySelectorAll('.linux-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.linux-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    // Smooth scroll to content start
+    const container = document.querySelector('.content-container');
+    if (container) {
+      window.scrollTo({ top: container.offsetTop - 20, behavior: 'smooth' });
+    }
+  }
+
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const offcanvas = document.getElementById('offcanvasMenu');
+  const offcanvasClose = document.getElementById('offcanvasClose');
+  
+  menuToggle?.addEventListener('click', (e) => { e.stopPropagation(); offcanvas.classList.add('open'); });
+  offcanvasClose?.addEventListener('click', () => offcanvas.classList.remove('open'));
+  
+  // Close offcanvas when clicking outside
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 900 && 
+        !offcanvas.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+      offcanvas.classList.remove('open');
+    }
+  });
+  
+  // Mobile dropdown toggle
+  document.querySelectorAll('.offcanvas-parent').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      item.classList.toggle('active');
+      const sub = item.nextElementSibling;
+      if (sub?.classList.contains('offcanvas-sub')) {
+        sub.style.display = sub.style.display === 'block' ? 'none' : 'block';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

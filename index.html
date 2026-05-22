@@ -1,2115 +1,250 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta name="google-site-verification" content="A8Lkt5xjJXOMk6YDvfp_fay-ZWKiM5-m5vntHlVeZG4" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HPC Quick Start Guide - IISER Mohali</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
-        }
-        
-        header {
-            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
-            color: white;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        
-        header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        header p {
-            opacity: 0.9;
-            font-size: 1rem;
-        }
-        
-        .github-link {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .github-link a {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: rgba(0,0,0,0.2);
-            padding: 0.4rem 0.7rem;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-
-        .github-link a:hover {
-            background: rgba(0,0,0,0.4);
-        }
-
-        .github-link i {
-            font-size: 1.1rem;
-        }
-        
-        /* Mobile Navigation Toggle */
-        .nav-toggle {
-            display: none;
-            background: #2d3748;
-            color: white;
-            border: none;
-            padding: 0.8rem 1rem;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .nav-toggle i {
-            margin-right: 0.5rem;
-        }
-        
-        nav {
-            background: #2d3748;
-            padding: 0.5rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-        
-        nav ul {
-            list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.3rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        nav a {
-            color: #e2e8f0;
-            text-decoration: none;
-            padding: 0.5rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            transition: background 0.3s;
-            display: block;
-        }
-        
-        nav a:hover {
-            background: #4a5568;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-        
-        section {
-            background: white;
-            margin-bottom: 1.5rem;
-            padding: 1.5rem;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        
-        h2 {
-            color: #1a365d;
-            border-bottom: 3px solid #3182ce;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.2rem;
-            font-size: 1.5rem;
-        }
-        
-        h3 {
-            color: #2c5282;
-            margin: 1.3rem 0 0.8rem 0;
-            font-size: 1.15rem;
-        }
-        
-        h4 {
-            color: #4a5568;
-            margin: 1rem 0 0.5rem 0;
-            font-size: 1rem;
-        }
-        
-        p {
-            margin-bottom: 1rem;
-        }
-        
-        pre {
-            background: #1a202c;
-            color: #e2e8f0;
-            padding: 1rem;
-            border-radius: 5px;
-            overflow-x: auto;
-            margin: 1rem 0;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-        
-        code {
-            background: #edf2f7;
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.85rem;
-            color: #c53030;
-        }
-        
-        pre code {
-            background: none;
-            padding: 0;
-            color: inherit;
-        }
-        
-        .danger-box {
-            background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
-            border: 3px solid #c53030;
-            padding: 1.2rem;
-            margin: 1.2rem 0;
-            border-radius: 6px;
-            color: #742a2a;
-            box-shadow: 0 3px 5px rgba(197, 48, 48, 0.2);
-        }
-        
-        .danger-box h3 {
-            color: #742a2a;
-            margin-top: 0;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .danger-box ul {
-            margin-left: 1.3rem;
-            margin-top: 0.5rem;
-        }
-        
-        .danger-box li {
-            font-weight: 600;
-        }
-        
-        .warning-box {
-            background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
-            border-left: 5px solid #d97706;
-            padding: 1.2rem;
-            margin: 1.2rem 0;
-            border-radius: 0 6px 6px 0;
-            color: #92400e;
-        }
-        
-        .warning-box h3 {
-            color: #92400e;
-            margin-top: 0;
-        }
-        
-        .warning-box ul {
-            margin-left: 1.3rem;
-            margin-top: 0.5rem;
-        }
-        
-        .info-box {
-            background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
-            border-left: 5px solid #2b6cb0;
-            padding: 1.2rem;
-            margin: 1.2rem 0;
-            border-radius: 0 6px 6px 0;
-            color: #2a4365;
-        }
-        
-        .info-box h3 {
-            color: #2a4365;
-            margin-top: 0;
-        }
-        
-        .success-box {
-            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
-            border-left: 5px solid #276749;
-            padding: 1.2rem;
-            margin: 1.2rem 0;
-            border-radius: 0 6px 6px 0;
-            color: #22543d;
-        }
-        
-        .success-box h3 {
-            color: #22543d;
-            margin-top: 0;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-            overflow-x: auto;
-            display: block;
-        }
-        
-        table thead,
-        table tbody {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-        
-        th, td {
-            border: 1px solid #e2e8f0;
-            padding: 0.7rem 0.8rem;
-            text-align: left;
-            word-wrap: break-word;
-        }
-        
-        th {
-
-            background: #2d3748;
-            color: white;
-            font-weight: 600;
-        }
-        
-        tr:nth-child(even) {
-            background: #f7fafc;
-        }
-        
-        ul, ol {
-            margin-left: 1.3rem;
-            margin-bottom: 1rem;
-        }
-        
-        li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .cluster-diagram {
-            background: #f7fafc;
-            border: 2px solid #cbd5e0;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
-        }
-        
-        .diagram-title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #2d3748;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .diagram-section {
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-label {
-            text-align: center;
-            font-weight: 600;
-            color: #4a5568;
-            margin-bottom: 0.8rem;
-            font-size: 0.9rem;
-        }
-        
-        .node-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.8rem;
-        }
-        
-        .node-box {
-            background: white;
-            border: 2px solid #cbd5e0;
-            border-radius: 6px;
-            padding: 0.8rem;
-            min-width: 100px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .login-node {
-            border-color: #3182ce;
-            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
-        }
-        
-        .master-node {
-            border-color: #805ad5;
-            background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%);
-        }
-        
-        .compute-node {
-            border-color: #48bb78;
-            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
-        }
-        
-        .node-title {
-            font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 0.3rem;
-            font-size: 0.9rem;
-        }
-        
-        .node-desc {
-            font-size: 0.75rem;
-            color: #718096;
-        }
-        
-        .node-cores {
-            font-size: 0.75rem;
-            color: #2d3748;
-            font-weight: 600;
-        }
-        
-        .network-connector {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 1rem 0;
-            gap: 0.5rem;
-        }
-        
-        .connector-line {
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(to right, transparent, #cbd5e0, transparent);
-            max-width: 150px;
-        }
-        
-        .network-label {
-            background: #2d3748;
-            color: white;
-            padding: 0.4rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        
-        .queue-table th {
-            background: #2c5282;
-        }
-        
-        footer {
-            background: #1a365d;
-            color: white;
-            text-align: center;
-            padding: 1.5rem 1rem;
-            margin-top: 2rem;
-        }
-        
-        footer a {
-            color: #90cdf4;
-        }
-        
-        .comment {
-            color: #68d391;
-        }
-        
-        .pbs-directive {
-            color: #90cdf4;
-        }
-        
-        .variable {
-            color: #fbd38d;
-        }
-        
-        .output {
-            color: #a0aec0;
-        }
-        
-        .skull {
-            font-size: 1.3rem;
-        }
-        
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.4rem;
-            }
-            
-            header p {
-                font-size: 0.9rem;
-            }
-            
-            .github-link {
-                position: static;
-                margin-top: 1rem;
-                text-align: center;
-            }
-            
-            .github-link a {
-                display: inline-flex;
-                font-size: 0.85rem;
-                padding: 0.4rem 0.6rem;
-            }
-            
-            .nav-toggle {
-                display: block;
-            }
-            
-            nav {
-                display: none;
-                position: static;
-                max-height: none;
-            }
-            
-            nav.active {
-                display: block;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                gap: 0;
-            }
-            
-            nav li {
-                border-bottom: 1px solid #4a5568;
-            }
-            
-            nav a {
-                padding: 0.8rem 1rem;
-                font-size: 0.9rem;
-            }
-            
-            .container {
-                padding: 0.5rem;
-            }
-            
-            section {
-                padding: 1rem;
-                margin-bottom: 1rem;
-            }
-            
-            h2 {
-                font-size: 1.3rem;
-            }
-            
-            h3 {
-                font-size: 1.1rem;
-            }
-            
-            pre {
-                font-size: 0.75rem;
-                padding: 0.8rem;
-            }
-            
-            table {
-                font-size: 0.8rem;
-            }
-            
-            th, td {
-                padding: 0.5rem 0.4rem;
-            }
-            
-            .diagram-title {
-                font-size: 0.9rem;
-            }
-            
-            .node-box {
-                min-width: 80px;
-                padding: 0.6rem;
-            }
-            
-            .node-title {
-                font-size: 0.8rem;
-            }
-            
-            .node-desc,
-            .node-cores {
-                font-size: 0.7rem;
-            }
-            
-            .network-label {
-                font-size: 0.7rem;
-                padding: 0.3rem 0.6rem;
-            }
-            
-            .connector-line {
-                max-width: 50px;
-            }
-            
-            .danger-box,
-            .warning-box,
-            .info-box,
-            .success-box {
-                padding: 1rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 1.2rem;
-            }
-            
-            h2 {
-                font-size: 1.2rem;
-            }
-            
-            h3 {
-                font-size: 1rem;
-            }
-            
-            pre {
-                font-size: 0.7rem;
-            }
-            
-            table {
-                font-size: 0.75rem;
-            }
-            
-            .diagram-title {
-                font-size: 0.8rem;
-            }
-            
-            .node-box {
-                min-width: 70px;
-                padding: 0.5rem 0.3rem;
-            }
-            
-            .network-label {
-                font-size: 0.65rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HPC Docs | IISER Mohali</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <header>
-        <h1>🖥️ HPC Quick Start Guide</h1>
-        <p>IISER Mohali High Performance Computing Cluster</p>
-        <div class="github-link">
-            <a href="https://github.com/sidhu2690/IISERM-HPC/" target="_blank">
-                <i class="fab fa-github"></i>
-                sidhu2690/IISERM-HPC
-            </a>
-        </div>
-    </header>
-    
-    <button class="nav-toggle" onclick="toggleNav()">
-        <i class="fas fa-bars"></i> Navigation Menu
-    </button>
-    
-    <nav id="mainNav">
-        <ul>
-            <li><a href="#introduction" onclick="closeNav()">Introduction</a></li>
-            <li><a href="#ethics" onclick="closeNav()">Resource Ethics</a></li>
-            <li><a href="#queues" onclick="closeNav()">Queues</a></li>
-            <li><a href="#job-script" onclick="closeNav()">Job Scripts</a></li>
-            <li><a href="#submitting" onclick="closeNav()">Submitting Jobs</a></li>
-            <li><a href="#monitoring" onclick="closeNav()">Monitoring</a></li>
-            <li><a href="#checking-resources" onclick="closeNav()">Check Resources</a></li>
-            <li><a href="#examples" onclick="closeNav()">Examples</a></li>
-            <li><a href="#troubleshooting" onclick="closeNav()">Troubleshooting</a></li>
-	    <li><a href="#gpu-computing" onclick="closeNav()">GPU</a></li>
-            <li><a href="#commands" onclick="closeNav()">Quick Reference</a></li>
-        </ul>
-    </nav>
-    
-    <div class="container">
-        
-        <!-- Introduction -->
-        <section id="introduction">
-            <h2>1. Introduction</h2>
-            <p>
-                High-Performance Computing (HPC) enables researchers to solve complex computational problems 
-                that would be impractical on regular computers. The IISER Mohali HPC cluster provides shared 
-                computing resources for the research community.
-            </p>
-            
-            <div class="info-box">
-                <h3>📌 Key Points</h3>
-                <ul>
-                    <li>The cluster uses <strong>PBS (Portable Batch System)</strong> as the job scheduler</li>
-                    <li>Jobs are submitted from <strong>login nodes</strong> and run on <strong>compute nodes</strong></li>
-                    <li>Resources are shared among all users — use them responsibly</li>
-                    <li>Never run heavy computations directly on login nodes</li>
-                </ul>
-            </div>
-	
-            
-            <h3 id="what-is-node">What is a Node?</h3>
-            <p>
-                A <strong>node</strong> is an individual computer within the cluster. Think of each node as 
-                a separate, powerful workstation. The cluster consists of multiple nodes connected via a 
-                high-speed network.
-            </p>
-            
-            <div class="cluster-diagram">
-                <div class="diagram-title">HPC CLUSTER ARCHITECTURE</div>
-                
-                <div class="diagram-section">
-                    <div class="section-label">Access Layer</div>
-                    <div class="node-group">
-                        <div class="node-box login-node">
-                            <div class="node-title">Login Node 1</div>
-                            <div class="node-desc">Submit jobs</div>
-                        </div>
-                        <div class="node-box login-node">
-                            <div class="node-title">Login Node 2</div>
-                            <div class="node-desc">Edit files</div>
-                        </div>
-                        <div class="node-box master-node">
-                            <div class="node-title">Master Node</div>
-                            <div class="node-desc">Job scheduler</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="network-connector">
-                    <div class="connector-line"></div>
-                    <div class="network-label">High-Speed Network</div>
-                    <div class="connector-line"></div>
-                </div>
-                
-                <div class="diagram-section">
-                    <div class="section-label">Compute Layer</div>
-                    <div class="node-group">
-                        <div class="node-box compute-node">
-                            <div class="node-title">gpc1</div>
-                            <div class="node-cores">52 cores</div>
-                        </div>
-                        <div class="node-box compute-node">
-                            <div class="node-title">gpc2</div>
-                            <div class="node-cores">52 cores</div>
-                        </div>
-                        <div class="node-box compute-node">
-                            <div class="node-title">...</div>
-                            <div class="node-cores">more nodes</div>
-                        </div>
-                        <div class="node-box compute-node">
-                            <div class="node-title">gpc32</div>
-                            <div class="node-cores">52 cores</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <table>
-                <thead>
-                <tr>
-                    <th>Node Type</th>
-                    <th>Names</th>
-                    <th>Purpose</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Login Nodes</td>
-                    <td>login1, login2</td>
-                    <td>Where you login, edit files, submit jobs</td>
-                </tr>
-                <tr>
-                    <td>CPU Compute Nodes</td>
-                    <td>gpc1-gpc32, bmc1-bmc7</td>
-                    <td>Where your CPU jobs run</td>
-                </tr>
-                <tr>
-                    <td>GPU Compute Nodes</td>
-                    <td>gpu1-gpu3</td>
-                    <td>For GPU-accelerated computations</td>
-                </tr>
-                </tbody>
-            </table>
-            
-            <h3 id="what-is-core">What is a Core?</h3>
-            <p>
-                A <strong>core</strong> (also called CPU core or processor) is an individual processing unit 
-                within a node. Each node contains multiple cores that can work independently or together.
-            </p>
-            
-            <div class="info-box">
-                <h3>🔢 Understanding Cores</h3>
-                <ul>
-                    <li><strong>Single-threaded program:</strong> Uses only 1 core</li>
-                    <li><strong>Multi-threaded program:</strong> Can use multiple cores on the same node</li>
-                    <li><strong>MPI program:</strong> Can use cores across multiple nodes</li>
-                </ul>
-                <p style="margin-bottom: 0; margin-top: 1rem;">
-                    <strong>Example:</strong> If a node has 52 cores and you request <code>ppn=4</code>, 
-                    your job will use 4 cores, leaving 48 cores available for other users.
-                </p>
-            </div>
-            
-            <div class="danger-box">
-                <h3><span class="skull">💀</span> CRITICAL: Use Only What You Need!</h3>
-                <p>
-                    If your program is <strong>NOT parallelized</strong> (single-threaded), you MUST use:
-                </p>
-                <pre style="background: #742a2a; margin: 1rem 0;"><code>#PBS -l nodes=1:ppn=1</code></pre>
-                <p>
-                    Requesting more cores than your program can use is <strong>RESOURCE THEFT</strong> from other researchers!
-                </p>
-            </div>
-            
-            <h3 id="cluster-architecture">Cluster Architecture Summary</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Component</th>
-                    <th>Specification</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Total Compute Nodes</td>
-                    <td>~39 nodes (gpc1-gpc32, bmc1-bmc7, gpu1-gpu3)</td>
-                </tr>
-                <tr>
-                    <td>Cores per Node (typical)</td>
-                    <td>52 cores (2 × Intel Xeon Gold 6230R)</td>
-                </tr>
-                <tr>
-                    <td>Total CPU Cores</td>
-                    <td>~1872 cores</td>
-                </tr>
-                <tr>
-                    <td>Memory per Node</td>
-                    <td>~384 GB (CPU nodes)</td>
-                </tr>
-                <tr>
-                    <td>GPU Nodes</td>
-                    <td>4 × Tesla T4 16GB PCIe per GPU node</td>
-                </tr>
-                </tbody>
-            </table>
-        </section>
-        
-        <!-- Resource Ethics -->
-        <section id="ethics">
-            <h2>2. Resource Ethics & Responsibilities</h2>
-            
-            <div class="danger-box">
-                <h3><span class="skull">☠️</span> STOP! READ THIS BEFORE USING HPC</h3>
-                <p style="font-size: 1.1rem; font-weight: bold;">
-                    The HPC cluster is a <strong>SHARED RESOURCE</strong> funded by the institute for the 
-                    entire research community. Wasting resources directly impacts your colleagues' research 
-                    and is considered a <strong>SERIOUS VIOLATION</strong> of usage policy.
-                </p>
-            </div>
-            
-            <h3>❌ What NOT to Do — RESOURCE CRIMES</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th style="background: #c53030;">Violation</th>
-                    <th style="background: #c53030;">Problem</th>
-                    <th style="background: #c53030;">Correct Approach</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><strong>Requesting more cores than your program uses</strong></td>
-                    <td>Idle cores are blocked from other users</td>
-                    <td>Request only what you need</td>
-                </tr>
-                <tr>
-                    <td><strong>Running single-threaded code with <code>ppn=40</code></strong></td>
-                    <td>39 cores sit completely idle while blocked!</td>
-                    <td>Use <code>ppn=1</code> for serial jobs</td>
-                </tr>
-                <tr>
-                    <td><strong>Requesting entire nodes unnecessarily</strong></td>
-                    <td>Blocks all 52 cores on that node</td>
-                    <td>Request specific core count needed</td>
-                </tr>
-                <tr>
-                    <td><strong>Setting excessive walltime</strong></td>
-                    <td>Resources reserved but unused</td>
-                    <td>Estimate realistic runtime + small buffer</td>
-                </tr>
-                <tr>
-                    <td><strong>Running jobs on login nodes</strong></td>
-                    <td>Slows down system for everyone</td>
-                    <td>Always use job submission (qsub)</td>
-                </tr>
-                <tr>
-                    <td><strong>Not cleaning up scratch space</strong></td>
-                    <td>Fills shared storage</td>
-                    <td>Delete temporary files after job completes</td>
-                </tr>
-                </tbody>
-            </table>
-            
-            <div class="danger-box">
-                <h3><span class="skull">🚨</span> THE GOLDEN RULE</h3>
-                <p style="font-size: 1.2rem; text-align: center; font-weight: bold;">
-                    If your code is NOT parallelized → Use <code>nodes=1:ppn=1</code>
-                </p>
-                <p style="text-align: center;">
-                    Most Python scripts, serial Fortran/C programs, and simple simulations are <strong>NOT</strong> parallel!
-                </p>
-            </div>
-            
-            <h3>✅ Best Practices</h3>
-            <div class="success-box">
-                <h3>Responsible HPC Usage</h3>
-                <ol>
-                    <li><strong>Know your code:</strong> Understand if it's serial, multithreaded, or MPI-parallel</li>
-                    <li><strong>Test first:</strong> Run short tests to determine actual resource needs</li>
-                    <li><strong>Request accurately:</strong> Only request cores your code can actually utilize</li>
-                    <li><strong>Monitor jobs:</strong> Check if resources are being used efficiently</li>
-                    <li><strong>Clean up:</strong> Remove temporary files and data you no longer need</li>
-                    <li><strong>Be considerate:</strong> During high-demand periods, limit resource requests</li>
-                </ol>
-            </div>
-            
-            <h3>How to Check if Your Code Uses Multiple Cores</h3>
-            <p>Before requesting multiple cores, TEST your program to see actual CPU usage:</p>
-            <pre><code><span class="comment"># Step 1: Get an interactive session</span>
-qsub -I -l nodes=1:ppn=4 -q short
 
-<span class="comment"># Step 2: Once on the compute node, run your program in background</span>
-cd /path/to/your/project
-./your_program &
-
-<span class="comment"># Step 3: Check CPU usage with 'top'</span>
-top -u $USER
-
-<span class="comment"># Step 4: Look at %CPU column:</span>
-<span class="comment">#   ~100%  = using 1 core   → use ppn=1</span>
-<span class="comment">#   ~200%  = using 2 cores  → use ppn=2</span>
-<span class="comment">#   ~400%  = using 4 cores  → use ppn=4</span>
-<span class="comment">#   ~5200% = using all 52   → use ppn=52</span>
-
-<span class="comment"># Step 5: If %CPU is ~100%, YOUR CODE IS NOT PARALLEL!</span>
-<span class="comment"># Use ppn=1 only!</span></code></pre>
-            
-            <div class="warning-box">
-                <h3>⚠️ Common Misconception</h3>
-                <p>
-                    <strong>Requesting more cores does NOT make your program faster!</strong>
-                </p>
-                <p>
-                    If your program is not written to use multiple cores (parallel programming), 
-                    it will only use 1 core regardless of how many you request. The other cores 
-                    will sit idle while being blocked from other users.
-                </p>
-            </div>
-        </section>
-        
-        <!-- Job Queues -->
-        <section id="queues">
-            <h2>3. Job Queues</h2>
-            <p>
-                Jobs are submitted to <strong>queues</strong> based on their expected runtime and resource 
-                requirements. Each queue has different time limits, core limits, and priorities.
-            </p>
-            
-            <h3>CPU Queues</h3>
-            <table class="queue-table">
-                <thead>
-                <tr>
-                    <th>Queue Name</th>
-                    <th>Max Walltime</th>
-                    <th>Max Cores/User</th>
-                    <th>Typical Use Case</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><code>default</code></td>
-                    <td>8 hours</td>
-                    <td>200 cores</td>
-                    <td>Quick jobs, testing, short calculations</td>
-                </tr>
-                <tr>
-                    <td><code>short</code></td>
-                    <td>72 hours (3 days)</td>
-                    <td>100 cores</td>
-                    <td>Medium-length production jobs</td>
-                </tr>
-                <tr>
-                    <td><code>long</code></td>
-                    <td>1080 hours (45 days)</td>
-                    <td>100 cores</td>
-                    <td>Long-running simulations</td>
-                </tr>
-                <tr>
-                    <td><code>infinity</code></td>
-                    <td>4380 hours (~6 months)</td>
-                    <td>50 cores</td>
-                    <td>Extended calculations (use sparingly!)</td>
-                </tr>
-                </tbody>
-            </table>
-            
-               
-            <h3>Check Queue Details</h3>
-            <pre><code><span class="comment"># View detailed information about all queues</span>
-qstat -Qf
-
-<span class="comment"># Example output (partial):</span>
-<span class="output">Queue: long
-    queue_type = Execution
-    total_jobs = 48
-    state_count = Transit:0 Queued:1 Held:12 Waiting:0 Running:35 Exiting:0
-    resources_max.ncpus = 416
-    resources_max.walltime = 1080:00:00
-    max_user_run = 100
-    max_user_res.ncpus = 100
-    enabled = True
-    started = True</span></code></pre>
-            
-            <div class="info-box">
-                <h3>💡 Queue Selection Tips</h3>
-                <ul>
-                    <li>Always choose the <strong>shortest queue</strong> that fits your job</li>
-                    <li>Shorter queues often have higher priority and start faster</li>
-                    <li>If unsure, start with <code>default</code> queue for testing</li>
-                    <li>Use <code>infinity</code> only when absolutely necessary</li>
-                    <li>Each queue has different nodes assigned to it</li>
-                </ul>
-            </div>
-        </section>
-        
-        <!-- Writing PBS Job Scripts -->
-        <section id="job-script">
-            <h2>4. Writing PBS Job Scripts</h2>
-            
-            <h3 id="basic-structure">Basic Structure</h3>
-            <p>
-                A PBS job script is a shell script with special <code>#PBS</code> directives that tell 
-                the scheduler what resources you need.
-            </p>
-            
-            <pre><code><span class="comment">#!/bin/bash</span>
-
-<span class="comment">#===============================================</span>
-<span class="comment"># PBS DIRECTIVES - Resource requests</span>
-<span class="comment">#===============================================</span>
-<span class="pbs-directive">#PBS -N my_job_name</span>          <span class="comment"># Job name (appears in qstat)</span>
-<span class="pbs-directive">#PBS -l nodes=1:ppn=1</span>        <span class="comment"># 1 node, 1 core (for serial jobs!)</span>
-<span class="pbs-directive">#PBS -l walltime=08:00:00</span>    <span class="comment"># Maximum runtime: 8 hours</span>
-<span class="pbs-directive">#PBS -q default</span>              <span class="comment"># Queue name</span>
-<span class="pbs-directive">#PBS -o output.log</span>           <span class="comment"># Standard output file</span>
-<span class="pbs-directive">#PBS -e error.log</span>            <span class="comment"># Standard error file</span>
-
-<span class="comment">#===============================================</span>
-<span class="comment"># CHANGE TO WORKING DIRECTORY</span>
-<span class="comment">#===============================================</span>
-cd <span class="variable">$PBS_O_WORKDIR</span>
-
-<span class="comment">#===============================================</span>
-<span class="comment"># LOAD REQUIRED MODULES</span>
-<span class="comment">#===============================================</span>
-module load anaconda3
-
-<span class="comment">#===============================================</span>
-<span class="comment"># RUN YOUR PROGRAM</span>
-<span class="comment">#===============================================</span>
-python my_script.py</code></pre>
-            
-            <div class="danger-box">
-                <h3><span class="skull">⚠️</span> IMPORTANT: Default to ppn=1</h3>
-                <p>
-                    Unless you KNOW your code is parallelized, always use:
-                </p>
-                <pre style="background: #742a2a; margin: 0.5rem 0;"><code>#PBS -l nodes=1:ppn=1</code></pre>
-            </div>
-            
-            <h3 id="pbs-directives">PBS Directives Explained</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Directive</th>
-                    <th>Description</th>
-                    <th>Example</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><code>#PBS -N</code></td>
-                    <td>Job name (max 15 characters recommended)</td>
-                    <td><code>#PBS -N simulation01</code></td>
-                </tr>
-                <tr>
-                    <td><code>#PBS -l nodes=X:ppn=Y</code></td>
-                    <td>Request X nodes with Y processors per node</td>
-                    <td><code>#PBS -l nodes=1:ppn=1</code></td>
-                </tr>
-                <tr>
-                    <td><code>#PBS -l walltime=</code></td>
-                    <td>Maximum job runtime (HH:MM:SS)</td>
-                    <td><code>#PBS -l walltime=08:00:00</code></td>
-                </tr>
-                <tr>
-                    <td><code>#PBS -q</code></td>
-                    <td>Queue selection</td>
-                    <td><code>#PBS -q long</code></td>
-                </tr>
-                <tr>
-                    <td><code>#PBS -o</code></td>
-                    <td>Output file path</td>
-                    <td><code>#PBS -o logs/output.log</code></td>
-                </tr>
-                <tr>
-                    <td><code>#PBS -e</code></td>
-                    <td>Error file path</td>
-                    <td><code>#PBS -e logs/error.log</code></td>
-                </tr>
-                <tr>
-                    <td><code>#PBS -j oe</code></td>
-                    <td>Join output and error into one file</td>
-                    <td><code>#PBS -j oe</code></td>
-                </tr>
-                <tr>
-                    <td><code>#PBS -M</code></td>
-                    <td>Email address for notifications</td>
-                    <td><code>#PBS -M user@iisermohali.ac.in</code></td>
-                </tr>
-                <tr>
-                    <td><code>#PBS -m</code></td>
-                    <td>When to send email (a=abort, b=begin, e=end)</td>
-                    <td><code>#PBS -m abe</code></td>
-                </tr>
-                </tbody>
-            </table>
-            
-            <h3 id="walltime">Setting Walltime</h3>
-            <p>Walltime is the maximum time your job is allowed to run. Format: <code>HH:MM:SS</code></p>
-            
-            <pre><code><span class="comment"># Examples of walltime settings</span>
-
-<span class="pbs-directive">#PBS -l walltime=01:00:00</span>      <span class="comment"># 1 hour</span>
-<span class="pbs-directive">#PBS -l walltime=08:00:00</span>      <span class="comment"># 8 hours (max for 'default' queue)</span>
-<span class="pbs-directive">#PBS -l walltime=72:00:00</span>      <span class="comment"># 72 hours / 3 days (max for 'short' queue)</span>
-<span class="pbs-directive">#PBS -l walltime=168:00:00</span>     <span class="comment"># 168 hours (7 days)</span>
-<span class="pbs-directive">#PBS -l walltime=720:00:00</span>     <span class="comment"># 720 hours (30 days)</span>
-<span class="pbs-directive">#PBS -l walltime=1080:00:00</span>    <span class="comment"># 1080 hours / 45 days (max for 'long' queue)</span></code></pre>
-            
-            <div class="warning-box">
-                <h3>⚠️ Walltime Warning</h3>
-                <p>
-                    If your job exceeds the walltime, it will be <strong>killed immediately</strong> without 
-                    saving any progress. Always add a buffer to your estimated runtime, and implement 
-                    checkpointing for long jobs.
-                </p>
-            </div>
-            
-            <h3 id="log-files">Log Files Configuration</h3>
-            <pre><code><span class="comment"># Method 1: Separate output and error files</span>
-<span class="pbs-directive">#PBS -o output.log</span>
-<span class="pbs-directive">#PBS -e error.log</span>
-
-<span class="comment"># Method 2: Combined output and error</span>
-<span class="pbs-directive">#PBS -o combined.log</span>
-<span class="pbs-directive">#PBS -j oe</span>
-
-<span class="comment"># Method 3: With full path (recommended)</span>
-<span class="pbs-directive">#PBS -o /persistent/data1/username/project/logs/job_output.log</span>
-<span class="pbs-directive">#PBS -e /persistent/data1/username/project/logs/job_error.log</span>
-
-<span class="comment"># Method 4: Include job ID in filename (in your script)</span>
-exec > "<span class="variable">$PBS_O_WORKDIR</span>/output_<span class="variable">$PBS_JOBID</span>.log" 2>&1</code></pre>
-            
-            <h3 id="targeting-nodes">Targeting Specific Nodes</h3>
-            
-            <div class="warning-box">
-                <h3>⚠️ Important: Avoid Targeting Specific Nodes Unless Necessary</h3>
-                <p>
-                    Targeting specific nodes is <strong>generally NOT recommended</strong> because:
-                </p>
-                <ul>
-                    <li>If that node is down or has issues, your job will fail repeatedly</li>
-                    <li>Your job may get stuck in queue waiting for that specific node</li>
-                    <li>Some nodes may appear "free" but have underlying problems</li>
-                </ul>
-                <p>
-                    <strong>Let the scheduler choose a node automatically unless you have a specific reason 
-                    (e.g., GPU nodes, specific software installed on certain nodes).</strong>
-                </p>
-            </div>
-            
-            <pre><code><span class="comment"># RECOMMENDED: Let scheduler choose automatically</span>
-<span class="pbs-directive">#PBS -l nodes=1:ppn=1</span>
-
-<span class="comment"># Target a specific node (use only if necessary)</span>
-<span class="pbs-directive">#PBS -l nodes=gpc30:ppn=4</span>
-
-<span class="comment"># Request multiple specific nodes</span>
-<span class="pbs-directive">#PBS -l nodes=gpc30:ppn=4+gpc31:ppn=4</span>
-
-<span class="comment"># Request GPU nodes</span>
-<span class="pbs-directive">#PBS -l nodes=gpu1:ppn=4</span></code></pre>
-            
-            <div class="danger-box">
-                <h3><span class="skull">🚨</span> Real Example: Node Issues</h3>
-                <p>
-                    Sometimes a node may show as "free" but still have problems. For example, 
-                    <code>gpc25</code> in the <code>long</code> queue has been known to cause job failures 
-                    even when <code>pbsnodes</code> shows it as available.
-                </p>
-                <p>
-                    <strong>If your job keeps failing on a specific node:</strong>
-                </p>
-                <ol>
-                    <li>Check <a href="#checking-resources">available resources</a> to find working nodes</li>
-                    <li>Either let the scheduler choose, or target a different node</li>
-                    <li>Report problematic nodes to HPC admin</li>
-                </ol>
-            </div>
-        </section>
-        
-        <!-- Submitting Jobs -->
-        <section id="submitting">
-            <h2>5. Submitting Jobs</h2>
-            
-            <h3>Basic Job Submission</h3>
-            <pre><code><span class="comment"># Submit a job script</span>
-qsub job.sh
-
-<span class="comment"># Output example:</span>
-<span class="output">430105.iisermhpc1</span></code></pre>
-            
-            <h3>Interactive Jobs</h3>
-            <p>Interactive jobs give you a shell on a compute node for testing and debugging.</p>
-            <pre><code><span class="comment"># Basic interactive job (1 core)</span>
-qsub -I -l nodes=1:ppn=1 -q default
-
-<span class="comment"># Interactive job with specific walltime</span>
-qsub -I -l nodes=1:ppn=4 -l walltime=02:00:00 -q short
-
-<span class="comment"># Interactive job on specific node (if needed)</span>
-qsub -I -l nodes=gpc30:ppn=1 -q long</code></pre>
-            
-            <h3>Deleting Jobs</h3>
-            <pre><code><span class="comment"># Delete a specific job</span>
-qdel 430105.iisermhpc1
-
-<span class="comment"># Delete multiple jobs</span>
-qdel 430105.iisermhpc1 430106.iisermhpc1
-
-<span class="comment"># Delete all your jobs (be careful!)</span>
-qdel $(qstat -u $USER | grep $USER | awk '{print $1}')</code></pre>
-        </section>
-        
-        <!-- Monitoring Jobs -->
-        <section id="monitoring">
-            <h2>6. Monitoring Jobs</h2>
-            
-            <h3>Check Your Jobs</h3>
-            <pre><code><span class="comment"># View all your jobs</span>
-qstat -u $USER
-
-<span class="comment"># Example:</span>
-qstat -u ms21080
-
-<span class="comment"># Sample output:</span>
-<span class="output">Job ID            Name       User      Time  S  Queue
-----------------  ---------  --------  ----  -  ------
-430035.iisermhpc1 simulation ms21080  03:52  R  long
-430036.iisermhpc1 test_job   ms21080  02:45  R  default
-430045.iisermhpc1 analysis   ms21080  00:00  Q  short
-430103.iisermhpc1 e04        ms21080  00:00  H  long</span>
-
-<span class="comment"># Status codes:</span>
-<span class="comment"># R = Running</span>
-<span class="comment"># Q = Queued (waiting to start)</span>
-<span class="comment"># H = Held (job has been held, check why)</span>
-<span class="comment"># E = Exiting</span>
-<span class="comment"># C = Completed</span></code></pre>
-            
-            <h3>Detailed Job Information</h3>
-            <pre><code><span class="comment"># Get detailed information about a specific job</span>
-qstat -f 430035.iisermhpc1
-
-<span class="comment"># Example output:</span>
-<span class="output">Job Id: 430104.iisermhpc1
-    Job_Name = e04
-    Job_Owner = ms21080@login1
-    job_state = H
-    queue = long
-    server = iisermhpc1
-    ...
-    Resource_List.nodes = gpc25:ppn=2
-    Resource_List.walltime = 1080:00:00
-    ...
-    comment = job held, too many failed attempts to run
-    run_count = 21
-    Exit_status = -3
-    ...</span>
-
-<span class="comment"># Key fields to look for:</span>
-<span class="comment"># - job_state: Current status (R, Q, H, etc.)</span>
-<span class="comment"># - exec_host: Which node(s) the job is running on</span>
-<span class="comment"># - resources_used: CPU time, memory, walltime used</span>
-<span class="comment"># - Resource_List: What was requested</span>
-<span class="comment"># - comment: Error messages or hold reasons</span>
-<span class="comment"># - Exit_status: Exit code (0 = success, non-zero = error)</span>
-<span class="comment"># - run_count: How many times job tried to run</span></code></pre>
-            
-            <h3>View All Jobs in Queue</h3>
-            <pre><code><span class="comment"># View all jobs in the cluster</span>
-qstat
-
-<span class="comment"># View all queues with their status</span>
-qstat -Q
-
-<span class="comment"># View detailed queue information</span>
-qstat -Qf</code></pre>
-        </section>
-        
-        <!-- Checking Available Resources -->
-        <section id="checking-resources">
-            <h2>7. Checking Available Resources</h2>
-            
-            <p>
-                Before submitting jobs (especially to specific nodes), you should check what resources 
-                are available. This helps you choose the right queue and avoid problematic nodes.
-            </p>
-            
-            <h3>Check Specific Node Status</h3>
-            <pre><code><span class="comment"># View status of a specific node</span>
-pbsnodes gpc25
-
-<span class="comment"># Example output:</span>
-<span class="output">gpc25
-     Mom = gpc25
-     ntype = PBS
-     state = free
-     pcpus = 52
-     resources_available.arch = linux
-     resources_available.host = gpc25
-     resources_available.mem = 394860832kb
-     resources_available.ncpus = 52
-     resources_available.vnode = gpc25
-     resources_assigned.accelerator_memory = 0kb
-     resources_assigned.hbmem = 0kb
-     resources_assigned.mem = 0kb
-     resources_assigned.naccelerators = 0
-     resources_assigned.ncpus = 0
-     resources_assigned.vmem = 0kb
-     queue = long
-     resv_enable = True
-     sharing = default_shared
-     last_state_change_time = Thu Jan 29 00:43:49 2026
-     last_used_time = Fri Jan  9 12:07:53 2026</span>
-
-<span class="comment"># Key fields:</span>
-<span class="comment"># state = free          → Node is available</span>
-<span class="comment"># state = job-exclusive → All cores in use</span>
-<span class="comment"># state = offline       → Node is not available</span>
-<span class="comment"># state = down          → Node has problems</span>
-<span class="comment"># pcpus = 52            → Total cores on node</span>
-<span class="comment"># resources_assigned.ncpus = 0  → Currently used cores</span>
-<span class="comment"># queue = long          → Which queue this node belongs to</span></code></pre>
-            
-            <div class="warning-box">
-                <h3>⚠️ Warning: "free" Doesn't Always Mean Working!</h3>
-                <p>
-                    A node may show <code>state = free</code> but still have issues. For example, 
-                    network problems or filesystem mount issues can cause jobs to fail even on 
-                    "free" nodes. If your job keeps failing on a specific node, try a different one!
-                </p>
-            </div>
-            
-            <h3>Check All Nodes</h3>
-            <pre><code><span class="comment"># View status of all nodes</span>
-pbsnodes -a</code></pre>
-            
-            <h3 id="check-free-cores">Check Free Cores in Each Queue</h3>
-            <p>
-                Use this script to find which nodes have free cores in a specific queue. 
-                This is very useful before submitting jobs!
-            </p>
-            
-            <h4>Script for Checking Free Cores (Long Queue Example):</h4>
-            <pre><code>pbsnodes -a | awk '
-/^[a-z]/ {node=$1}
-/queue = long/ {inqueue=1}
-/pcpus/ {if(inqueue) total=$3}
-/resources_assigned.ncpus/ {
-  if(inqueue){
-    used=$3;
-    free=total-used;
-    printf "%-8s : %3d free cores\n", node, free;
-    sum+=free;
-    if(free==total) fullfree++;
-    inqueue=0
-  }}
-END {
-  print "------------------------";
-  print "Total free cores  =", sum;
-  print "Fully free nodes  =", fullfree;
-}'</code></pre>
-            
-            <h4>Example Output:</h4>
-            <pre><code><span class="output">gpc27    :  46 free cores
-gpc28    :  20 free cores
-gpc29    :  12 free cores
-gpc30    :  49 free cores
-gpc31    :  52 free cores
-gpc32    :  20 free cores
-gpc25    :  52 free cores
-------------------------
-Total free cores  = 251
-Fully free nodes  = 2</span></code></pre>
-            
-            <div class="success-box">
-                <h3>✅ How to Use This Information</h3>
-                <p>Once you have this output, you can:</p>
-                <ol>
-                    <li><strong>See total available cores:</strong> 251 cores available in long queue</li>
-                    <li><strong>Find fully free nodes:</strong> 2 nodes have all 52 cores free (gpc31, gpc25)</li>
-                    <li><strong>Choose a working node:</strong> If gpc25 is not working, use gpc31 or others</li>
-                    <li><strong>Target specific node:</strong> <code>#PBS -l nodes=gpc31:ppn=4</code></li>
-                </ol>
-            </div>
-            
-            <h4>For Other Queues (Change the queue name):</h4>
-            <pre><code><span class="comment"># For 'short' queue - change "long" to "short":</span>
-pbsnodes -a | awk '
-/^[a-z]/ {node=$1}
-/queue = short/ {inqueue=1}
-/pcpus/ {if(inqueue) total=$3}
-/resources_assigned.ncpus/ {
-  if(inqueue){
-    used=$3;
-    free=total-used;
-    printf "%-8s : %3d free cores\n", node, free;
-    sum+=free;
-    if(free==total) fullfree++;
-    inqueue=0
-  }}
-END {
-  print "------------------------";
-  print "Total free cores  =", sum;
-  print "Fully free nodes  =", fullfree;
-}'
-
-<span class="comment"># For 'default' queue - change to: /queue = default/</span>
-<span class="comment"># For 'infinity' queue - change to: /queue = infinity/</span></code></pre>
-            
-            <h4>Add This Function to Your ~/.bashrc (Recommended)</h4>
-            <p>Follow these steps to add the <code>checkfree</code> function permanently:</p>
-            
-            <div class="info-box">
-                <h3>📝 Step-by-Step Instructions</h3>
-                <ol>
-                    <li><strong>Open your .bashrc file:</strong>
-                        <pre style="margin: 0.5rem 0;"><code>nano ~/.bashrc</code></pre>
-                    </li>
-                    <li><strong>Scroll to the end of the file</strong> (use arrow keys or Page Down)</li>
-                    <li><strong>Copy and paste the function below</strong> at the end of the file</li>
-                    <li><strong>Save and exit:</strong>
-                        <ul style="margin-top: 0.5rem;">
-                            <li>Press <code>Ctrl + S</code> to save (then press Enter to confirm)</li>
-                            <li>Press <code>Ctrl + X</code> to exit nano</li>
-                        </ul>
-                    </li>
-                    <li><strong>Reload your .bashrc:</strong>
-                        <pre style="margin: 0.5rem 0;"><code>source ~/.bashrc</code></pre>
-                    </li>
-                </ol>
-            </div>
-            
-            <h4>Function Code to Add:</h4>
-            <pre><code><span class="comment"># Function to check free cores in HPC queues</span>
-checkfree() {
-    local queue=${1:-long}
-    echo "=== Free cores in '$queue' queue ==="
-    pbsnodes -a | awk -v q="$queue" '
-    /^[a-z]/ {node=$1}
-    /queue =/ {if($3==q) inqueue=1}
-    /pcpus/ {if(inqueue) total=$3}
-    /resources_assigned.ncpus/ {
-      if(inqueue){
-        used=$3;
-        free=total-used;
-        if(free>0) printf "%-8s : %3d free cores\n", node, free;
-        sum+=free;
-        if(free==total) fullfree++;
-        inqueue=0
-      }}
-    END {
-      print "------------------------";
-      print "Total free cores  =", sum;
-      print "Fully free nodes  =", fullfree+0;
-    }'
-}</code></pre>
-
-            <h4>How to Use After Adding:</h4>
-            <pre><code><span class="comment"># Check different queues:</span>
-checkfree long
-checkfree short
-checkfree default
-checkfree infinity
-checkfree gpushort
-checkfree gpulong
-
-<span class="comment"># If no queue is specified, it defaults to 'long':</span>
-checkfree</code></pre>
-
-            <div class="success-box">
-                <h3>✅ Verification</h3>
-                <p>To verify the function was added correctly, type:</p>
-                <pre style="margin: 0.5rem 0;"><code>type checkfree</code></pre>
-                <p>You should see the function definition. If you see "checkfree: not found", the function wasn't added properly.</p>
-            </div>
-            
-            <div class="danger-box">
-                <h3><span class="skull">🚨</span> Important: After Checking Free Cores</h3>
-                <p>
-                    Once you identify free nodes, if you know a specific node is NOT working 
-                    (like gpc25 in the example), <strong>target a different node</strong> or let the 
-                    scheduler choose automatically:
-                </p>
-                <pre style="background: #742a2a; margin: 0.5rem 0;"><code><span class="comment"># Option 1: Let scheduler choose (SAFEST)</span>
-#PBS -l nodes=1:ppn=1
-
-<span class="comment"># Option 2: Target a known working node</span>
-#PBS -l nodes=gpc31:ppn=1</code></pre>
-                <p style="margin-top: 1rem;">
-                    <strong>Remember:</strong> Use <code>ppn=1</code> unless your code is actually parallelized!
-                </p>
-            </div>
-        </section>
-        
-        <!-- Complete Examples -->
-        <section id="examples">
-            <h2>8. Complete Examples</h2>
-            
-            <h3>Example 1: Simple Python Job (Serial - Single Core)</h3>
-            <pre><code><span class="comment">#!/bin/bash</span>
-<span class="pbs-directive">#PBS -N python_analysis</span>
-<span class="pbs-directive">#PBS -l nodes=1:ppn=1</span>           <span class="comment"># ONLY 1 CORE for serial job!</span>
-<span class="pbs-directive">#PBS -l walltime=04:00:00</span>
-<span class="pbs-directive">#PBS -q default</span>
-<span class="pbs-directive">#PBS -o python_out.log</span>
-<span class="pbs-directive">#PBS -e python_err.log</span>
-
-cd <span class="variable">$PBS_O_WORKDIR</span>
-
-module load anaconda3
-
-echo "Job started at: $(date)"
-echo "Running on node: $(hostname)"
-
-python analysis.py
-
-echo "Job finished at: $(date)"</code></pre>
-            
-   <h3>Example 2: Multi-threaded Job (OpenMP)</h3>
-
-<p style="color:#c0392b; font-weight:bold; margin-bottom:10px;">
-⚠ IMPORTANT: Requesting multiple cores and setting OMP_NUM_THREADS alone DOES NOT make your program parallel.
-Your program MUST be explicitly written using OpenMP directives (e.g., #pragma omp parallel, #pragma omp parallel for).
-Otherwise, it will still run on a single core and NOT use other nodes or cores.
-</p>
-
-<pre><code><span class="comment">#!/bin/bash</span>
-<span class="pbs-directive">#PBS -N openmp_sim</span>
-<span class="pbs-directive">#PBS -l nodes=1:ppn=16</span>          <span class="comment"># 16 cores on 1 node</span>
-<span class="pbs-directive">#PBS -l walltime=48:00:00</span>
-<span class="pbs-directive">#PBS -q short</span>
-<span class="pbs-directive">#PBS -o omp_output.log</span>
-<span class="pbs-directive">#PBS -e omp_error.log</span>
-
-cd <span class="variable">$PBS_O_WORKDIR</span>
-
-<span class="comment"># Set OpenMP threads to match requested cores</span>
-export OMP_NUM_THREADS=16
-
-echo "Using $OMP_NUM_THREADS threads"
-
-<span class="comment"># The program must be compiled with OpenMP support (e.g., gcc -fopenmp)</span>
-<span class="comment"># and contain OpenMP parallel regions inside the code.</span>
-
-./my_openmp_program</code></pre>
-
-            <h3>Example 3: MPI Job (Multiple Nodes)</h3>
-            <pre><code><span class="comment">#!/bin/bash</span>
-<span class="pbs-directive">#PBS -N mpi_simulation</span>
-<span class="pbs-directive">#PBS -l nodes=4:ppn=20</span>          <span class="comment"># 4 nodes, 20 cores each = 80 total</span>
-<span class="pbs-directive">#PBS -l walltime=72:00:00</span>
-<span class="pbs-directive">#PBS -q short</span>
-<span class="pbs-directive">#PBS -o mpi_output.log</span>
-<span class="pbs-directive">#PBS -e mpi_error.log</span>
-
-cd <span class="variable">$PBS_O_WORKDIR</span>
-
-module load openmpi-4.1.0
-
-<span class="comment"># Calculate total processes</span>
-NPROCS=$(wc -l < <span class="variable">$PBS_NODEFILE</span>)
-echo "Running on $NPROCS processors"
-
-mpirun -np $NPROCS ./my_mpi_program</code></pre>
-            
-            <h3>Example 4: Geant4 Simulation</h3>
-            <pre><code><span class="comment">#!/bin/bash</span>
-<span class="pbs-directive">#PBS -N geant4_sim</span>
-<span class="pbs-directive">#PBS -l nodes=1:ppn=2</span>
-<span class="pbs-directive">#PBS -l walltime=168:00:00</span>
-<span class="pbs-directive">#PBS -q long</span>
-<span class="pbs-directive">#PBS -o geant4_out.log</span>
-<span class="pbs-directive">#PBS -e geant4_err.log</span>
-
-cd <span class="variable">$PBS_O_WORKDIR</span>
-
-<span class="comment"># Load Geant4</span>
-module load codes/geant4/11.1
-
-<span class="comment"># Set Geant4 data paths</span>
-export G4ENSDFSTATEDATA=/gscratch/apps/root/geant4/install/share/Geant4/data/G4ENSDFSTATE2.3
-export G4LEVELGAMMADATA=/gscratch/apps/root/geant4/install/share/Geant4/data/PhotonEvaporation5.7
-export G4LEDATA=/gscratch/apps/root/geant4/install/share/Geant4/data/G4EMLOW8.2
-export G4PARTICLEXSDATA=/gscratch/apps/root/geant4/install/share/Geant4/data/G4PARTICLEXS4.0
-
-<span class="comment"># Record timing</span>
-START=$(date +%s)
-echo "Started at: $(date)"
-
-./sim run.mac
-
-END=$(date +%s)
-echo "Finished at: $(date)"
-echo "Duration: $((END-START)) seconds"</code></pre>
-            
-            <h3>Example 5: Targeting a Specific Working Node</h3>
-            <pre><code><span class="comment">#!/bin/bash</span>
-<span class="comment"># Use this when you've checked available nodes and want to avoid a problematic one</span>
-<span class="comment"># First run: checkfree long (see Section 8)</span>
-<span class="comment"># Then choose a working node from the output</span>
-
-<span class="pbs-directive">#PBS -N my_simulation</span>
-<span class="pbs-directive">#PBS -l nodes=gpc31:ppn=1</span>       <span class="comment"># Targeting gpc31 specifically</span>
-<span class="pbs-directive">#PBS -l walltime=720:00:00</span>
-<span class="pbs-directive">#PBS -q long</span>
-<span class="pbs-directive">#PBS -o output.log</span>
-<span class="pbs-directive">#PBS -e error.log</span>
-
-cd <span class="variable">$PBS_O_WORKDIR</span>
-
-echo "Running on node: $(hostname)"
-./my_program</code></pre>
-        </section>
-        
-        <!-- Troubleshooting -->
-        <section id="troubleshooting">
-            <h2>9. Troubleshooting</h2>
-            
-            <h3>Job Stuck in Queue (Q status)</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Possible Cause</th>
-                    <th>Solution</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Requested resources not available</td>
-                    <td>Use the <a href="#check-free-cores">free cores checking script</a> to find available resources, then reduce core/node request</td>
-                </tr>
-                <tr>
-                    <td>Targeting a busy node</td>
-                    <td>Remove specific node requirement, let scheduler choose</td>
-                </tr>
-                <tr>
-                    <td>Queue is full</td>
-                    <td>Wait, or try a different queue</td>
-                </tr>
-                <tr>
-                    <td>Exceeded user limits</td>
-                    <td>Check <code>qstat -Qf</code> for max_user_res.ncpus limits</td>
-                </tr>
-                </tbody>
-            </table>
-            
-            <h3>Job Held (H status)</h3>
-            <pre><code><span class="comment"># Check why job is held</span>
-qstat -f JOB_ID | grep -E "(comment|run_count|Exit_status)"
-
-<span class="comment"># Example output:</span>
-<span class="output">comment = job held, too many failed attempts to run
-run_count = 21
-Exit_status = -3</span>
-
-<span class="comment"># This means the node has issues! Steps to fix:</span>
-<span class="comment"># 1. Delete the held job</span>
-qdel JOB_ID
-
-<span class="comment"># 2. Check which nodes are free (see Section 8)</span>
-<span class="comment"># 3. Either let scheduler choose or pick a different node</span>
-<span class="comment"># 4. Resubmit</span>
-qsub job.sh</code></pre>
-            
-            <h3>Job Failed (Exit_status ≠ 0)</h3>
-            <pre><code><span class="comment"># Check exit status</span>
-qstat -f JOB_ID | grep Exit_status
-
-<span class="comment"># Common exit codes:</span>
-<span class="comment"># 0    = Success</span>
-<span class="comment"># 1    = General error in your program</span>
-<span class="comment"># -3   = Job couldn't start (node/environment issue)</span>
-<span class="comment"># 137  = Killed (memory limit exceeded or SIGKILL)</span>
-<span class="comment"># 265  = Walltime exceeded</span>
-
-<span class="comment"># Check error log</span>
-cat error.log</code></pre>
-            
-            <h3>Node Shows "Free" But Job Keeps Failing</h3>
-            <pre><code><span class="comment"># Check the node status</span>
-pbsnodes gpc25
-
-<span class="comment"># Even if state = free, the node might have issues!</span>
-<span class="comment"># Check last_used_time - if it's old, node might be problematic</span>
-
-<span class="comment"># Solution: Use a different node or let scheduler choose</span>
-<span class="pbs-directive">#PBS -l nodes=1:ppn=1</span>           <span class="comment"># Let scheduler choose</span>
-<span class="comment"># OR</span>
-<span class="pbs-directive">#PBS -l nodes=gpc30:ppn=1</span>       <span class="comment"># Target known working node</span></code></pre>
-            
-            <div class="info-box">
-                <h3>💡 Pro Tip: Test Before Long Runs</h3>
-                <p>
-                    Before submitting a long job, always test with a short run first:
-                </p>
-                <ol>
-                    <li>Submit to <code>default</code> queue with short walltime</li>
-                    <li>Check if it starts and runs correctly</li>
-                    <li>Then submit the full job to <code>long</code> or <code>infinity</code></li>
-                </ol>
-            </div>
-        </section>
-
-
-<!-- GPU Computing -->
-<section id="gpu-computing">
-
-
-
-<h2>10. GPU Computing</h2>
-
-<div class="info-box">
-    <h3>🎮 GPU Cluster Overview</h3>
-    <ul>
-        <li><strong>3 GPU nodes:</strong> gpu1, gpu2, gpu3</li>
-        <li><strong>GPUs per node:</strong> 4 × NVIDIA Tesla T4</li>
-        <li><strong>Memory per GPU:</strong> 15 GB (15360 MiB)</li>
-        <li><strong>CUDA Version:</strong> 11.6</li>
-        <li><strong>Driver Version:</strong> 510.47.03</li>
-    </ul>
-</div>
-
-<h3>GPU Node Specifications</h3>
-<table>
-    <thead>
-    <tr>
-        <th>Node</th>
-        <th>Queue</th>
-        <th>CPU Cores</th>
-        <th>Memory</th>
-        <th>GPUs</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td><code>gpu1</code></td>
-        <td><code>gpushort</code></td>
-        <td>52 cores</td>
-        <td>~744 GB</td>
-        <td>4 × Tesla T4 (15 GB each)</td>
-    </tr>
-    <tr>
-        <td><code>gpu2</code></td>
-        <td><code>gpulong</code></td>
-        <td>104 cores</td>
-        <td>~1.5 TB</td>
-        <td>4 × Tesla T4 (15 GB each)</td>
-    </tr>
-    <tr>
-        <td><code>gpu3</code></td>
-        <td><code>gpulong</code></td>
-        <td>52 cores</td>
-        <td>~744 GB</td>
-        <td>4 × Tesla T4 (15 GB each)</td>
-    </tr>
-    </tbody>
-</table>
-
-<h3>GPU Queues</h3>
-<table>
-    <thead>
-    <tr>
-        <th>Queue Name</th>
-        <th>Nodes</th>
-        <th>Status</th>
-        <th>Workaround</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td><code>gpushort</code></td>
-        <td>gpu1</td>
-        <td>⚠️ Batch broken</td>
-        <td>Use <code>qsub -I -q gpushort</code></td>
-    </tr>
-    <tr>
-        <td><code>gpulong</code></td>
-        <td>gpu2, gpu3</td>
-        <td>⚠️ Batch broken</td>
-        <td>Use <code>qsub -I -q gpulong</code></td>
-    </tr>
-    </tbody>
-</table>
-
-<h3>Working Solution: Interactive + nohup</h3>
-<p>
-    Since batch submission is currently broken, you must use <strong>interactive sessions</strong> 
-    combined with <strong>nohup</strong> to run long GPU jobs. This setup allows your job to keep 
-    running while you continue doing other work on the HPC (for example, opening a new SSH session 
-    and running additional commands).
-</p>
-<p>
-    You can start an interactive session, launch your job using <code>nohup</code>, and then use 
-    another SSH session for other tasks. However, keep one important limitation in mind: 
-    <strong> If you close the interactive session, the job will stop</strong>. There is currently 
-    no way to run the job in a fully detached manner. Once the interactive session ends, the job 
-    terminates as well.
-</p>
-<h4>Step 1: Request Interactive GPU Session</h4>
-<pre><code><span class="comment"># Request 8 hours on gpu3 with 16 CPU cores</span>
-qsub -I -q gpulong -l select=1:ncpus=16:host=gpu3,walltime=8:00:00
-
-<span class="comment"># Explanation:</span>
-<span class="comment"># -I                  = Interactive session</span>
-<span class="comment"># -q gpulong          = GPU queue (use gpushort for gpu1)</span>
-<span class="comment"># select=1:ncpus=16   = 16 CPU cores</span>
-<span class="comment"># host=gpu3           = Target gpu3 specifically (or gpu2)</span>
-<span class="comment"># walltime=8:00:00    = 8 hours maximum (adjust as needed)</span>
-
-<span class="comment"># Once accepted, you'll land on the GPU node:</span>
-<span class="output">[user@gpu3 ~]$</span></code></pre>
-
-<h4>Step 2: Setup Environment on GPU Node</h4>
-<pre><code><span class="comment"># Navigate to your project directory</span>
-cd /persistent/data2/username/your_project
-
-<span class="comment"># Load Anaconda and activate your environment</span>
-module load anaconda3
-conda activate your_env
-
-<span class="comment"># Set GPU visibility (use all 4 GPUs or specific ones)</span>
-export CUDA_VISIBLE_DEVICES=0,1,2,3
-
-<span class="comment"># Disable InfiniBand (prevents NCCL errors on this cluster)</span>
-export NCCL_IB_DISABLE=1
-
-<span class="comment"># Set OpenMP threads (optional, for CPU parallelism)</span>
-export OMP_NUM_THREADS=4
-
-<span class="comment"># Ensure Python output is not buffered (see logs in real-time)</span>
-export PYTHONUNBUFFERED=1</code></pre>
-
-<h4>Step 3: Launch Job with nohup (Detached Mode)</h4>
-<pre><code><span class="comment"># Run your training in background with nohup</span>
-nohup torchrun --nproc_per_node=4 train.py > train.log 2>&1 &
-
-<span class="comment"># Explanation:</span>
-<span class="comment"># nohup              = Keeps process running after disconnect</span>
-<span class="comment"># torchrun           = PyTorch distributed launcher</span>
-<span class="comment"># --nproc_per_node=4 = Use 4 GPUs (match CUDA_VISIBLE_DEVICES)</span>
-<span class="comment"># > train.log 2>&1   = Redirect all output to train.log</span>
-<span class="comment"># &                  = Run in background</span>
-
-<span class="comment"># After running, you'll see:</span>
-<span class="output">[1] 123456</span>
-
-<span class="comment"># Note the PID (123456) for monitoring</span>
-echo $!
-
-<span class="comment"># For single-GPU jobs (no torchrun needed):</span>
-nohup python train.py > train.log 2>&1 &</code></pre>
-
-<h4>Step 4: Monitor Your nohup Job</h4>
-<pre><code><span class="comment"># Watch training log in real-time</span>
-tail -f train.log
-
-<span class="comment"># Monitor GPU usage (updates every 1 second)</span>
-<span class="comment"># This will show your current running nohup jobs</span>
-watch -n 1 nvidia-smi
-
-<span class="comment"># Check if your process is still running</span>
-ps aux | grep train.py
-
-<span class="comment"># See all your running processes</span>
-ps aux | grep $USER</code></pre>
-
-<h4>Step 5: Kill a nohup Job</h4>
-<pre><code><span class="comment"># Find the process ID (PID)</span>
-ps aux | grep train.py
-
-<span class="comment"># Kill by PID</span>
-kill 123456
-
-<span class="comment"># Force kill if it doesn't stop</span>
-kill -9 123456
-
-<span class="comment"># Or kill all your Python processes</span>
-pkill -u $USER python</code></pre>
-
-  </section>
-        
-        <!-- Quick Reference -->
-        <section id="commands">
-            <h2>11. Quick Reference Commands</h2>
-            
-            <h3>Job Submission & Control</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Command</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><code>qsub job.sh</code></td>
-                    <td>Submit a job script</td>
-                </tr>
-                <tr>
-                    <td><code>qsub -I -l nodes=1:ppn=1 -q default</code></td>
-                    <td>Start interactive session</td>
-                </tr>
-                <tr>
-                    <td><code>qdel JOB_ID</code></td>
-                    <td>Delete/cancel a job</td>
-                </tr>
-                <tr>
-                    <td><code>qhold JOB_ID</code></td>
-                    <td>Hold a queued job</td>
-                </tr>
-                <tr>
-                    <td><code>qrls JOB_ID</code></td>
-                    <td>Release a held job</td>
-                </tr>
-                </tbody>
-            </table>
-            
-            <h3>Job Monitoring</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Command</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><code>qstat</code></td>
-                    <td>Show all jobs in queue</td>
-                </tr>
-                <tr>
-                    <td><code>qstat -u $USER</code></td>
-                    <td>Show only your jobs</td>
-                </tr>
-                <tr>
-                    <td><code>qstat -f JOB_ID</code></td>
-                    <td>Detailed job information</td>
-                </tr>
-                <tr>
-                    <td><code>qstat -Q</code></td>
-                    <td>Show queue summary</td>
-                </tr>
-                <tr>
-                    <td><code>qstat -Qf</code></td>
-                    <td>Detailed queue information</td>
-                </tr>
-                </tbody>
-            </table>
-            
-            <h3>Node & Resource Information</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Command</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><code>pbsnodes -a</code></td>
-                    <td>Show all nodes status</td>
-                </tr>
-                <tr>
-                    <td><code>pbsnodes NODE_NAME</code></td>
-                    <td>Show specific node status</td>
-                </tr>
-                <tr>
-                    <td><code>checkfree long</code></td>
-                    <td>Check free cores in long queue (after adding function to .bashrc)</td>
-                </tr>
-                </tbody>
-            </table>
-            
-            <h3>Module Management</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Command</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><code>module avail</code></td>
-                    <td>List available modules</td>
-                </tr>
-                <tr>
-                    <td><code>module load NAME</code></td>
-                    <td>Load a module</td>
-                </tr>
-                <tr>
-                    <td><code>module unload NAME</code></td>
-                    <td>Unload a module</td>
-                </tr>
-                <tr>
-                    <td><code>module list</code></td>
-                    <td>Show loaded modules</td>
-                </tr>
-                <tr>
-                    <td><code>module purge</code></td>
-                    <td>Unload all modules</td>
-                </tr>
-                </tbody>
-            </table>
-            
-            <h3>PBS Environment Variables</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Variable</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><code>$PBS_O_WORKDIR</code></td>
-                    <td>Directory where qsub was executed</td>
-                </tr>
-                <tr>
-                    <td><code>$PBS_JOBID</code></td>
-                    <td>Unique job identifier</td>
-                </tr>
-                <tr>
-                    <td><code>$PBS_NODEFILE</code></td>
-                    <td>File containing list of assigned nodes</td>
-                </tr>
-                <tr>
-                    <td><code>$PBS_JOBNAME</code></td>
-                    <td>Name of the job</td>
-                </tr>
-                <tr>
-                    <td><code>$PBS_QUEUE</code></td>
-                    <td>Queue the job is running in</td>
-                </tr>
-                </tbody>
-            </table>
-        </section>
-        
-        <!-- Final Tips -->
-        <section>
-            <h2>Final Tips</h2>
-            
-            <div class="success-box">
-                <h3>✅ Checklist Before Submitting</h3>
-                <ol>
-                    <li>Is my executable compiled and working?</li>
-                    <li>Are all input files in place?</li>
-                    <li><strong>Is my code parallel? If NOT, use ppn=1!</strong></li>
-                    <li>Did I request the correct number of cores for my program?</li>
-                    <li>Is my walltime estimate realistic (with buffer)?</li>
-                    <li>Did I choose the appropriate queue?</li>
-                    <li>Are my log file paths correct?</li>
-                    <li>Did I include <code>cd $PBS_O_WORKDIR</code> in my script?</li>
-                    <li>Did I check that the target node (if specified) is working?</li>
-                </ol>
-            </div>
-            
-            <div class="danger-box">
-                <h3><span class="skull">💀</span> Remember: Don't Waste Resources!</h3>
-                <ul>
-                    <li>Use <code>ppn=1</code> for serial (non-parallel) jobs</li>
-                    <li>Only request cores your program actually uses</li>
-                    <li>Choose the shortest queue that fits your job</li>
-                    <li>Clean up temporary files after jobs complete</li>
-                    <li>Be considerate of other researchers</li>
-                </ul>
-            </div>
-            
-            <div class="info-box">
-                <h3>📧 Need Help?</h3>
-                <p>
-                    For technical issues, contact the HPC support team at: 
-                    <a href="mailto:helpdesk-hpc@iisermohali.ac.in">helpdesk-hpc@iisermohali.ac.in</a>
-                </p>
-                <p>
-                    For community discussions: 
-                    <a href="mailto:hpc-community@iisermohali.ac.in">hpc-community@iisermohali.ac.in</a>
-                </p>
-            </div>
-        </section>
-        
+<!-- ===== Header ===== -->
+<header class="header">
+  <div class="header-container">
+    <div class="logo-area">
+      <i class="fa-solid fa-microchip" style="font-size:1.5rem;color:var(--accent)"></i>
+      <div class="site-title">HPC <span>Guide</span></div>
     </div>
     
-    <footer>
-        <p><strong>IISER Mohali HPC Documentation</strong></p>
-        <p>High Performance Computing Facility</p>
-        <p style="margin-top: 1rem; opacity: 0.8; font-size: 0.9rem;">
-            Last updated: January 2026<br>
-            Contact: <a href="mailto:helpdesk-hpc@iisermohali.ac.in">helpdesk-hpc@iisermohali.ac.in</a>
-        </p>
-    </footer>
+    <!-- Desktop Nav -->
+    <nav class="main-nav">
+      <a href="index.html" class="nav-item active">Home</a>
+      
+      <div class="nav-item parent">
+        HPC Details
+        <div class="dropdown">
+          <a href="architecture.html">Architecture</a>
+          <a href="linux.html">Linux Basics</a>
+          <a href="pbs.html">PBS Jobs</a>
+          <a href="gpu.html">GPU & Nohup</a>
+        </div>
+      </div>
+      
+      <a href="#reference" class="nav-item">Quick Reference</a>
+      <a href="#support" class="nav-item">Support</a>
+    </nav>
     
-    <script>
-        function toggleNav() {
-            const nav = document.getElementById('mainNav');
-            nav.classList.toggle('active');
-        }
-        
-        function closeNav() {
-            const nav = document.getElementById('mainNav');
-            if (window.innerWidth <= 768) {
-                nav.classList.remove('active');
-            }
-        }
-        
-        // Close nav when clicking outside on mobile
-        document.addEventListener('click', function(event) {
-            const nav = document.getElementById('mainNav');
-            const toggle = document.querySelector('.nav-toggle');
-            
-            if (window.innerWidth <= 768 && 
-                !nav.contains(event.target) && 
-                !toggle.contains(event.target)) {
-                nav.classList.remove('active');
-            }
-        });
-    </script>
+    <!-- Mobile Toggle -->
+    <button class="menu-toggle" id="menuToggle">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ===== Mobile Offcanvas Menu ===== -->
+<aside class="offcanvas" id="offcanvasMenu">
+  <div class="offcanvas-header">
+    <div class="site-title">HPC <span>Guide</span></div>
+    <button class="offcanvas-close" id="offcanvasClose">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <nav class="offcanvas-nav">
+    <a href="index.html">Home</a>
+    
+    <a href="#" class="offcanvas-parent">HPC Details <i class="fa-solid fa-chevron-down" style="float:right;font-size:0.8rem"></i></a>
+    <div class="offcanvas-sub">
+      <a href="architecture.html">Architecture</a>
+      <a href="linux.html">Linux Basics</a>
+      <a href="pbs.html">PBS Jobs</a>
+      <a href="gpu.html">GPU & Nohup</a>
+    </div>
+    
+    <a href="#reference">Quick Reference</a>
+    <a href="#support">Support</a>
+    <a href="https://www.iisermohali.ac.in" target="_blank">IISER Mohali</a>
+  </nav>
+</aside>
+
+<!-- ===== Page Header Bar ===== -->
+<div class="page-header-bar">
+  <div class="page-header-container">
+    <h1><i class="fa-solid fa-server"></i> IISER Mohali HPC</h1>
+  </div>
+</div>
+
+<!-- ===== Main Content ===== -->
+<div class="content-container">
+
+  <!-- Quick Start Banner -->
+  <div class="quickstart-banner">
+    <div>
+      <h3><i class="fa-solid fa-rocket"></i> Quick Start</h3>
+      <div class="qs-step">1. SSH: <code>ssh user@hpc.iisermohali.ac.in</code></div>
+      <div class="qs-step">2. Load module: <code>module load python/3.11</code></div>
+      <div class="qs-step">3. Submit: <code>qsub job.pbs</code></div>
+    </div>
+    <div class="callout info" style="margin:0; border-radius:8px; border-left:none; background:rgba(255,255,255,0.1)">
+      <i class="fa-solid fa-lightbulb"></i> Run <code>module avail</code> to see installed software
+    </div>
+  </div>
+
+  <!-- Topic Cards -->
+  <div class="card-grid">
+    <a href="architecture.html" class="card">
+      <i class="fa-solid fa-server"></i>
+      <h3>Architecture</h3>
+      <p>Cluster layout, nodes, storage systems, and network topology.</p>
+    </a>
+    <a href="linux.html" class="card">
+      <i class="fa-solid fa-terminal"></i>
+      <h3>Linux Basics</h3>
+      <p>Essential commands, file permissions, and process management.</p>
+    </a>
+    <a href="pbs.html" class="card">
+      <i class="fa-solid fa-list-check"></i>
+      <h3>PBS Jobs</h3>
+      <p>Write, submit, and monitor batch jobs using PBS Pro scheduler.</p>
+    </a>
+    <a href="gpu.html" class="card">
+      <i class="fa-solid fa-chip"></i>
+      <h3>GPU & Background</h3>
+      <p>Use GPU resources, run background jobs with nohup, monitor usage.</p>
+    </a>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider"></div>
+
+  <!-- Quick Reference Table -->
+  <section class="section-card" id="reference">
+    <h2><i class="fa-solid fa-keyboard"></i> Quick Reference</h2>
+    <table class="data-table">
+      <tbody>
+        <tr><th><code>qstat</code></th><td>View your jobs in queue</td></tr>
+        <tr><th><code>qsub script.pbs</code></th><td>Submit a batch job</td></tr>
+        <tr><th><code>qdel &lt;jobid&gt;</code></th><td>Cancel a running job</td></tr>
+        <tr><th><code>module load &lt;name&gt;</code></th><td>Load software environment</td></tr>
+        <tr><th><code>nvidia-smi</code></th><td>Monitor GPU status</td></tr>
+        <tr><th><code>du -sh ~/</code></th><td>Check your disk usage</td></tr>
+        <tr><th><code>scontrol show nodes</code></th><td>View node availability</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      <i class="fa-solid fa-triangle-exclamation"></i> 
+      <strong>Important:</strong> Never run compute-heavy tasks on login nodes. Always use <code>qsub</code>.
+    </div>
+  </section>
+
+  <!-- Support Section -->
+  <section class="section-card" id="support">
+    <h2><i class="fa-solid fa-headset"></i> Need Help?</h2>
+    <div class="support-grid">
+      <div class="support-item">
+        <i class="fa-solid fa-envelope"></i>
+        <div>
+          <strong>Email</strong><br>
+          <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a>
+        </div>
+      </div>
+      <div class="support-item">
+        <i class="fa-solid fa-clock"></i>
+        <div>
+          <strong>Office Hours</strong><br>
+          Mon–Fri, 10:00–16:00 IST
+        </div>
+      </div>
+      <div class="support-item">
+        <i class="fa-solid fa-book-open"></i>
+        <div>
+          <strong>Wiki</strong><br>
+          <a href="#">Internal Knowledge Base</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== Footer ===== -->
+<footer class="footer-bar">
+  <div class="footer-container">
+    <div class="footer-card">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="linux.html">Linux Basics</a></li>
+        <li><a href="pbs.html">PBS Jobs</a></li>
+        <li><a href="gpu.html">GPU & Nohup</a></li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>Resources</h3>
+      <ul>
+        <li><a href="#reference">Command Reference</a></li>
+        <li><a href="#support">Get Support</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Changelog</a></li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>Contact</h3>
+      <p>
+        <i class="fa-solid fa-phone"></i> +91-172-XXXXXXX<br>
+        <i class="fa-solid fa-envelope"></i> <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a>
+      </p>
+      <p style="margin-top:1rem; font-size:0.85rem; color:#64748b">
+        © 2026 IISER Mohali HPC Team
+      </p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <a href="#">Report an Issue</a> • <a href="#">Privacy Policy</a>
+  </div>
+</footer>
+
+<!-- ===== Scripts ===== -->
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const offcanvas = document.getElementById('offcanvasMenu');
+  const offcanvasClose = document.getElementById('offcanvasClose');
+  
+  menuToggle?.addEventListener('click', () => offcanvas.classList.add('open'));
+  offcanvasClose?.addEventListener('click', () => offcanvas.classList.remove('open'));
+  
+  // Close offcanvas when clicking outside
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 900 && 
+        !offcanvas.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+      offcanvas.classList.remove('open');
+    }
+  });
+  
+  // Mobile dropdown toggle
+  document.querySelectorAll('.offcanvas-parent').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      item.classList.toggle('active');
+    });
+  });
+  
+  // Active nav state
+  document.querySelectorAll('.nav-item, .offcanvas-nav a').forEach(link => {
+    if (link.href === window.location.href) {
+      document.querySelectorAll('.nav-item, .offcanvas-nav a').forEach(i => i.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+</script>
+
 </body>
 </html>
