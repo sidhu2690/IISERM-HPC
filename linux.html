@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Linux Basics | IISER Mohali HPC</title>
+  <title>Linux Basics | IISER Mohali Unofficial HPC Guide</title>
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -110,15 +110,15 @@
 <header class="header">
   <div class="header-container">
     <div class="logo-area">
-      <i class="fa-solid fa-microchip" style="font-size:1.5rem;color:var(--accent)"></i>
-      <div class="site-title">HPC <span>Guide</span></div>
+      <img src="assets/logo.png" alt="IISER Mohali Logo" style="height:40px"/>
+      <div class="site-title">IISER Mohali <span>Unofficial HPC Guide</span></div>
     </div>
     
     <!-- Desktop Nav -->
     <nav class="main-nav">
       <a href="index.html" class="nav-item">Home</a>
       
-      <div class="nav-item parent">
+      <div class="nav-item parent active">
         HPC Details
         <div class="dropdown">
           <a href="architecture.html">Architecture</a>
@@ -128,8 +128,11 @@
         </div>
       </div>
       
-      <a href="index.html#reference" class="nav-item">Quick Reference</a>
+      <a href="index.html#resources" class="nav-item">Resources</a>
       <a href="index.html#support" class="nav-item">Support</a>
+      <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank" class="nav-item" title="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
     </nav>
     
     <!-- Mobile Toggle -->
@@ -142,7 +145,7 @@
 <!-- ===== Mobile Offcanvas Menu ===== -->
 <aside class="offcanvas" id="offcanvasMenu">
   <div class="offcanvas-header">
-    <div class="site-title">HPC <span>Guide</span></div>
+    <div class="site-title">IISER Mohali <span>Unofficial HPC Guide</span></div>
     <button class="offcanvas-close" id="offcanvasClose">
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -158,8 +161,9 @@
       <a href="gpu.html">GPU & Nohup</a>
     </div>
     
-    <a href="index.html#reference">Quick Reference</a>
+    <a href="index.html#resources">Resources</a>
     <a href="index.html#support">Support</a>
+    <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repo</a>
     <a href="https://www.iisermohali.ac.in" target="_blank">IISER Mohali</a>
   </nav>
 </aside>
@@ -795,26 +799,28 @@ job.log                           100%   128KB   1.8MB/s   00:00</span></div>
       </ul>
     </div>
     <div class="footer-card">
-      <h3>Related Pages</h3>
+      <h3>Resources</h3>
       <ul>
-        <li><a href="architecture.html">Architecture</a></li>
-        <li><a href="pbs.html">PBS Jobs</a></li>
-        <li><a href="gpu.html">GPU & Nohup</a></li>
-        <li><a href="index.html#reference">Command Reference</a></li>
+        <li><a href="http://172.16.2.200/h/index.html" target="_blank">Official HPC Docs</a></li>
+        <li><a href="https://dsjena.github.io/HPCSchool/" target="_blank">HPC School</a></li>
+        <li><a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repo</a></li>
+        <li><a href="index.html#support">Get Support</a></li>
       </ul>
     </div>
     <div class="footer-card">
       <h3>Contact</h3>
       <p>
-        <i class="fa-solid fa-envelope"></i> <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a><br>
-        <i class="fa-solid fa-clock"></i> Mon–Fri, 10:00–16:00 IST
+        <i class="fa-solid fa-envelope"></i> 
+        <a href="mailto:helpdesk-hpc@iisermohali.ac.in">helpdesk-hpc@iisermohali.ac.in</a><br>
+        <a href="mailto:hpc@iisermohali.ac.in">hpc@iisermohali.ac.in</a>
       </p>
       <p style="margin-top:1rem; font-size:0.85rem; color:#64748b">
-        © 2026 IISER Mohali HPC Team
+        © 2026 IISER Mohali HPC Community
       </p>
     </div>
   </div>
   <div class="footer-bottom">
+    <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> Contribute on GitHub</a> • 
     <a href="#">Report an Issue</a> • <a href="#">Privacy Policy</a>
   </div>
 </footer>
