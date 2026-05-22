@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PBS Jobs | IISER Mohali HPC</title>
+  <title>PBS Jobs | IISER Mohali Unofficial HPC Guide</title>
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -68,6 +68,48 @@
     /* Lists in cards */
     .section-card ul { padding-left: 1.25rem; margin: 0.5rem 0; }
     .section-card li { margin: 0.35rem 0; }
+    
+    /* Bash function demo styling */
+    .bash-demo {
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .bash-demo-header {
+      background: #1e293b;
+      padding: 0.4rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .bash-demo-header .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .bash-demo-body {
+      padding: 0.85rem 1rem;
+      color: #94a3b8;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    
+    /* Critical warning box */
+    .critical-warning {
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      border-left: 4px solid #ef4444;
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      color: #991b1b;
+    }
+    .critical-warning strong { color: #b91c1c; }
+    .critical-warning i { margin-right: 0.4rem; }
   </style>
 </head>
 <body>
@@ -76,15 +118,15 @@
 <header class="header">
   <div class="header-container">
     <div class="logo-area">
-      <i class="fa-solid fa-microchip" style="font-size:1.5rem;color:var(--accent)"></i>
-      <div class="site-title">HPC <span>Guide</span></div>
+      <img src="assets/logo.png" alt="IISER Mohali Logo" style="height:40px"/>
+      <div class="site-title">IISER Mohali <span>Unofficial HPC Guide</span></div>
     </div>
     
     <!-- Desktop Nav -->
     <nav class="main-nav">
       <a href="index.html" class="nav-item">Home</a>
       
-      <div class="nav-item parent">
+      <div class="nav-item parent active">
         HPC Details
         <div class="dropdown">
           <a href="architecture.html">Architecture</a>
@@ -94,8 +136,11 @@
         </div>
       </div>
       
-      <a href="index.html#reference" class="nav-item">Quick Reference</a>
+      <a href="index.html#resources" class="nav-item">Resources</a>
       <a href="index.html#support" class="nav-item">Support</a>
+      <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank" class="nav-item" title="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
     </nav>
     
     <!-- Mobile Toggle -->
@@ -108,7 +153,7 @@
 <!-- ===== Mobile Offcanvas Menu ===== -->
 <aside class="offcanvas" id="offcanvasMenu">
   <div class="offcanvas-header">
-    <div class="site-title">HPC <span>Guide</span></div>
+    <div class="site-title">IISER Mohali <span>Unofficial HPC Guide</span></div>
     <button class="offcanvas-close" id="offcanvasClose">
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -124,8 +169,9 @@
       <a href="gpu.html">GPU & Nohup</a>
     </div>
     
-    <a href="index.html#reference">Quick Reference</a>
+    <a href="index.html#resources">Resources</a>
     <a href="index.html#support">Support</a>
+    <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repo</a>
     <a href="https://www.iisermohali.ac.in" target="_blank">IISER Mohali</a>
   </nav>
 </aside>
@@ -150,6 +196,7 @@
     <button class="pbs-tab" onclick="showPbsSection('software', this)">Loading Software</button>
     <button class="pbs-tab" onclick="showPbsSection('templates', this)">Templates</button>
     <button class="pbs-tab" onclick="showPbsSection('managing', this)">Submit & Monitor</button>
+    <button class="pbs-tab" onclick="showPbsSection('advanced', this)">Advanced Tips</button>
   </div>
 
   <!-- ===================== BASICS ===================== -->
@@ -303,13 +350,29 @@
   <section class="pbs-section" id="output">
     
     <div class="section-card">
-      <h2><i class="fa-solid fa-file-lines"></i> Output & Logs</h2>
-      <p>By default PBS saves your job's output to the folder where you ran <code>qsub</code>. You can control the filename and whether stdout and stderr go to one file or two.</p>
+      <h2><i class="fa-solid fa-file-lines"></i> Output & Logs — Explained Simply</h2>
+      <p>When your job runs, it produces two types of output:</p>
+      <table class="data-table">
+        <tbody>
+          <tr><th>Type</th><th>What it is</th><th>Example</th></tr>
+          <tr>
+            <td><strong>stdout</strong> (standard output)</td>
+            <td>Normal output from your program — results, progress messages, print statements</td>
+            <td><code>print("Hello")</code>, <code>echo "Done"</code></td>
+          </tr>
+          <tr>
+            <td><strong>stderr</strong> (standard error)</td>
+            <td>Warning messages, errors, or diagnostic info — things that went wrong or need attention</td>
+            <td><code>FileNotFoundError</code>, <code>Warning: low memory</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>By default, PBS saves both to the folder where you ran <code>qsub</code>. You can control whether they go to one file or two.</p>
     </div>
 
     <div class="section-card">
       <h2><i class="fa-solid fa-circle-info"></i> Default Behaviour (no flags)</h2>
-      <p>If you don't specify anything, PBS creates a file named <code>&lt;jobname&gt;.o&lt;jobid&gt;</code> in your submission directory.</p>
+      <p>If you don't specify anything, PBS creates a file named <code>&lt;jobname&gt;.o&lt;jobid&gt;</code> containing both stdout and stderr merged together.</p>
       <pre><code><span class="comment"># You submit:</span>
 <span class="cmd">qsub</span> myscript.sh
 <span class="comment"># → Job ID: 465118.iisermhpc1</span>
@@ -317,33 +380,33 @@
     </div>
 
     <div class="section-card">
-      <h2><i class="fa-solid fa-code"></i> Option 1 — One Merged File (recommended)</h2>
-      <p>Use <code>-j oe</code> to merge stdout and stderr into a single file. Add <code>-o</code> to give it a clean name.</p>
+      <h2><i class="fa-solid fa-code"></i> Option 1 — One Merged File (recommended for beginners)</h2>
+      <p>Use <code>-j oe</code> to merge stdout and stderr into a single file. Add <code>-o</code> to give it a clean, readable name.</p>
       <pre><code>#!/bin/bash
 <span class="directive">#PBS -N MyJob</span>
 <span class="directive">#PBS -q default</span>
 <span class="directive">#PBS -l nodes=1:ppn=1</span>
 <span class="directive">#PBS -l walltime=01:00:00</span>
-<span class="directive">#PBS -j oe</span>
-<span class="directive">#PBS -o MyJob.log</span>
+<span class="directive">#PBS -j oe</span>              <span class="comment"># join stdout + stderr</span>
+<span class="directive">#PBS -o MyJob.log</span>        <span class="comment"># name the output file</span>
 
 <span class="cmd">cd</span> $PBS_O_WORKDIR
 <span class="cmd">echo</span> "everything goes into MyJob.log"</code></pre>
       <div class="callout tip">
-        ✅ One file, easy to read. Both normal output and any errors appear together.
+        ✅ One file, easy to read. Both normal output and any errors appear together in chronological order.
       </div>
     </div>
 
     <div class="section-card">
-      <h2><i class="fa-solid fa-code"></i> Option 2 — Separate stdout and stderr</h2>
+      <h2><i class="fa-solid fa-code"></i> Option 2 — Separate stdout and stderr (advanced)</h2>
       <p>Leave out <code>-j oe</code> and specify both <code>-o</code> and <code>-e</code> separately. Useful if you want to check errors without digging through all the output.</p>
       <pre><code>#!/bin/bash
 <span class="directive">#PBS -N MyJob</span>
 <span class="directive">#PBS -q default</span>
 <span class="directive">#PBS -l nodes=1:ppn=1</span>
 <span class="directive">#PBS -l walltime=01:00:00</span>
-<span class="directive">#PBS -o MyJob_out.log</span>
-<span class="directive">#PBS -e MyJob_err.log</span>
+<span class="directive">#PBS -o MyJob_out.log</span>   <span class="comment"># stdout only</span>
+<span class="directive">#PBS -e MyJob_err.log</span>   <span class="comment"># stderr only</span>
 
 <span class="cmd">cd</span> $PBS_O_WORKDIR
 <span class="cmd">echo</span> "this goes to MyJob_out.log"
@@ -375,7 +438,7 @@
   <section class="pbs-section" id="cpus">
     
     <div class="section-card">
-      <h2><i class="fa-solid fa-microchip"></i> CPUs</h2>
+      <h2><i class="fa-solid fa-microchip"></i> CPUs — Requesting Cores</h2>
       <p>Requesting CPUs tells the scheduler how many cores to give your job. There are two valid syntaxes on IISERM HPC — both work, they mean the same thing.</p>
     </div>
 
@@ -420,8 +483,17 @@
       <p>Inside your running job you can check:</p>
       <pre><code><span class="cmd">nproc</span>                  <span class="comment"># cores assigned to this job</span>
 <span class="cmd">cat</span> $PBS_NODEFILE      <span class="comment"># lists the node(s) assigned</span></code></pre>
-      <div class="callout tip">
-        💡 Only request more than 1 core if your code actually uses multiple cores — requesting unused cores wastes cluster resources and makes your job wait longer.
+      
+      <div class="critical-warning">
+        <strong><i class="fa-solid fa-triangle-exclamation"></i> VERY IMPORTANT: Only use ppn > 1 if your code actually uses parallel processing!</strong><br><br>
+        Most Python/R/Matlab scripts run on a single core by default. If you request <code>ppn=16</code> but your code only uses 1 core, the other 15 cores sit idle — wasting shared resources and making your job wait longer in the queue.<br><br>
+        <strong>Rule of thumb:</strong> If you're not sure whether your code uses parallel processing, <strong>always start with <code>ppn=1</code></strong>. Only increase it if:
+        <ul style="margin-top:0.5rem; padding-left:1.2rem;">
+          <li>You're using libraries like <code>mpi4py</code>, <code>multiprocessing</code>, <code>OpenMP</code>, or <code>numba.prallel</code></li>
+          <li>Your software documentation explicitly says it supports multi-core execution</li>
+          <li>You've tested and confirmed speedup with more cores</li>
+        </ul>
+        <strong>When in doubt, stick to <code>ppn=1</code>.</strong> You can always request more later once you know your code benefits from it.
       </div>
     </div>
 
@@ -693,6 +765,133 @@ PYEOF
 
   </section>
 
+  <!-- ===================== ADVANCED TIPS ===================== -->
+  <section class="pbs-section" id="advanced">
+    
+    <div class="section-card">
+      <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Advanced Tips: Check Free Cores & Target Specific Nodes</h2>
+      <p>On our cluster, some nodes may appear "up" but are actually down or overloaded. To save time and avoid jobs stuck in queue, you can add a helper function to your <code>~/.bashrc</code> that shows free cores per node in any queue.</p>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-terminal"></i> Step 1: Add the <code>checkfree()</code> Function to ~/.bashrc</h2>
+      <p>Open your bash configuration file:</p>
+      <pre><code><span class="cmd">nano</span> ~/.bashrc</code></pre>
+      <p>Scroll to the bottom and paste this function:</p>
+      
+      <div class="bash-demo">
+        <div class="bash-demo-header">
+          <span class="dot" style="background:#ef4444"></span>
+          <span class="dot" style="background:#eab308"></span>
+          <span class="dot" style="background:#22c55e"></span>
+          <span style="color:#64748b; font-size:0.72rem; margin-left:0.4rem">~/.bashrc</span>
+        </div>
+        <div class="bash-demo-body"><span class="comment"># === HPC Helper: Check free cores in any queue ===</span>
+checkfree() {
+    local queue=${1:-long}
+    echo "=== Free cores in '$queue' queue ==="
+    pbsnodes -a | awk -v q="$queue" '
+    /^[a-z]/ {node=$1}
+    /queue =/ {if($3==q) inqueue=1}
+    /pcpus/ {if(inqueue) total=$3}
+    /resources_assigned.ncpus/ {
+      if(inqueue){
+        used=$3;
+        free=total-used;
+        if(free>0) printf "%-8s : %3d free cores\n", node, free;
+        sum+=free;
+        if(free==total) fullfree++;
+        inqueue=0
+      }}
+    END {
+      print "------------------------";
+      print "Total free cores  =", sum;
+      print "Fully free nodes  =", fullfree+0;
+    }'
+}</code></div>
+      </div>
+      
+      <p>Save with <kbd>Ctrl+O</kbd> → <kbd>Enter</kbd>, then exit with <kbd>Ctrl+X</kbd>.</p>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-terminal"></i> Step 2: Reload Your ~/.bashrc</h2>
+      <p>Apply the changes by sourcing the file:</p>
+      <pre><code><span class="cmd">source</span> ~/.bashrc</code></pre>
+      <p>Now the <code>checkfree</code> command is available in your terminal.</p>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-terminal"></i> Step 3: Use checkfree to See Available Cores</h2>
+      <p>Run <code>checkfree</code> followed by any queue name:</p>
+      <pre><code><span class="cmd">checkfree</span> default
+<span class="cmd">checkfree</span> short
+<span class="cmd">checkfree</span> long
+<span class="cmd">checkfree</span> infinity
+<span class="cmd">checkfree</span> gpushort
+<span class="cmd">checkfree</span> gpulong</code></pre>
+      
+      <p>Example output:</p>
+      <div class="bash-demo">
+        <div class="bash-demo-header">
+          <span class="dot" style="background:#ef4444"></span>
+          <span class="dot" style="background:#eab308"></span>
+          <span class="dot" style="background:#22c55e"></span>
+          <span style="color:#64748b; font-size:0.72rem; margin-left:0.4rem">login1</span>
+        </div>
+        <div class="bash-demo-body"><span class="t-prompt">(base) [ms21080@login1 ~]$</span> <span class="t-cmd">checkfree default</span>
+=== Free cores in 'default' queue ===
+gpc2     :  12 free cores
+gpc3     :  12 free cores
+gpc4     :  12 free cores
+gpc5     :  32 free cores
+gpc6     :  32 free cores
+gpc7     :  52 free cores
+gpc8     :  52 free cores
+gpc9     :  52 free cores
+gpc10    : 104 free cores
+gpc11    :  52 free cores
+gpc12    :  52 free cores
+gpc13    :   3 free cores
+------------------------
+Total free cores  = 467
+Fully free nodes  = 6
+<span class="t-prompt">(base) [ms21080@login1 ~]$</span></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-bullseye"></i> Bonus: Target a Specific Node</h2>
+      <p>If you see a node with many free cores (e.g., <code>gpc11</code> has 52 free), you can target it directly in your PBS script:</p>
+      <pre><code><span class="directive">#PBS -l nodes=gpc11:ppn=4</span>   <span class="comment"># request 4 cores on node gpc11 only</span></code></pre>
+      <p>This can help your job start faster if that node is lightly loaded.</p>
+      
+      <div class="callout warn">
+        ⚠️ <strong>Use node targeting sparingly.</strong> Only do this if:
+        <ul style="margin-top:0.5rem;">
+          <li>You've confirmed the node is healthy and has resources</li>
+          <li>Your job has specific hardware needs (e.g., GPU, large RAM)</li>
+          <li>You're debugging and need consistent node behavior</li>
+        </ul>
+        For most jobs, let the scheduler pick the node automatically.
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><i class="fa-solid fa-circle-check"></i> Pro Workflow Summary</h2>
+      <ol style="padding-left:1.25rem; margin:0.5rem 0;">
+        <li>Before submitting, run <code>checkfree default</code> (or your target queue)</li>
+        <li>Look for nodes with high "free cores" count</li>
+        <li>Optionally target one: <code>#PBS -l nodes=gpc11:ppn=4</code></li>
+        <li>Submit with <code>qsub script.sh</code></li>
+        <li>Verify it's running: <code>qstat -u $USER</code> → look for status <code>R</code></li>
+        <li>Watch output: <code>tail -f MyJob.log</code></li>
+      </ol>
+      <p>This simple habit saves hours of waiting for jobs stuck on "dead" nodes.</p>
+    </div>
+
+  </section>
+
 </div>
 
 <!-- ===== Footer ===== -->
@@ -704,30 +903,32 @@ PYEOF
         <li><a href="#basics">The Basics</a></li>
         <li><a href="#templates">Templates</a></li>
         <li><a href="#managing">Submit & Monitor</a></li>
-        <li><a href="index.html#reference">Command Reference</a></li>
+        <li><a href="#advanced">Advanced Tips</a></li>
       </ul>
     </div>
     <div class="footer-card">
-      <h3>Related Pages</h3>
+      <h3>Resources</h3>
       <ul>
-        <li><a href="linux.html">Linux Basics</a></li>
-        <li><a href="gpu.html">GPU & Nohup</a></li>
-        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="http://172.16.2.200/h/index.html" target="_blank">Official HPC Docs</a></li>
+        <li><a href="https://dsjena.github.io/HPCSchool/" target="_blank">HPC School</a></li>
+        <li><a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> GitHub Repo</a></li>
         <li><a href="index.html#support">Get Support</a></li>
       </ul>
     </div>
     <div class="footer-card">
       <h3>Contact</h3>
       <p>
-        <i class="fa-solid fa-envelope"></i> <a href="mailto:hpc-support@iisermohali.ac.in">hpc-support@iisermohali.ac.in</a><br>
-        <i class="fa-solid fa-clock"></i> Mon–Fri, 10:00–16:00 IST
+        <i class="fa-solid fa-envelope"></i> 
+        <a href="mailto:helpdesk-hpc@iisermohali.ac.in">helpdesk-hpc@iisermohali.ac.in</a><br>
+        <a href="mailto:hpc@iisermohali.ac.in">hpc@iisermohali.ac.in</a>
       </p>
       <p style="margin-top:1rem; font-size:0.85rem; color:#64748b">
-        © 2026 IISER Mohali HPC Team
+        © 2026 IISER Mohali HPC Community
       </p>
     </div>
   </div>
   <div class="footer-bottom">
+    <a href="https://github.com/sidhu2690/IISERM-HPC" target="_blank"><i class="fa-brands fa-github"></i> Contribute on GitHub</a> • 
     <a href="#">Report an Issue</a> • <a href="#">Privacy Policy</a>
   </div>
 </footer>
